@@ -1,4 +1,5 @@
 interface INEP141 {
+    totalSupply():uint256;
     /************************************/
     /* CHANGE METHODS on fungible token */
     /************************************/
