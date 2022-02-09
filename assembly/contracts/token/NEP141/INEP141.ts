@@ -1,8 +1,8 @@
 import { u256 } from "near-sdk-as";
 
-export interface INEP141 {
+export default interface INEP141 {
     totalSupply():u256;
-    balanceOf(account: string): (u256);
+    balanceOf(account: string): u256;
     transfer(to: string, amount: u256, memo: string|null): void;
     allowance(owner:string, spender:string): u256;
     approve(spender:string , amount: u256): bool;
