@@ -22,8 +22,7 @@
     "asbuild:untouched": "asc assembly/index.ts --target debug",
     "asbuild:optimized": "asc assembly/index.ts --target release",
     "asbuild": "npm run asbuild:untouched && npm run asbuild:optimized",
-    "test": "node tests",
-    "prepublishOnly": "npm run build",
-    "build": "asc assembly/index.ts -b dist/index.wasm -d dist/index-wasm.d.ts --runtime full --sourceMap --validate -O3 --noAssert"
+    "test": "asp",
+    "prepublishOnly": "npm run build"
   }
 }
