@@ -1,12 +1,12 @@
-import { u256 } from "near-sdk-as";
+import { u128 } from "near-sdk-as";
 
 export default interface INEP141 {
-    totalSupply():u256;
-    balanceOf(account: string): u256|null;
-    transfer(to: string, amount: u256, memo: string|null): void;
-    allowance(owner:string, spender:string): u256;
-    approve(spender:string , amount: u256): bool;
-    transferFrom( from:string, to:string, amount:u256 ): bool;
+    totalSupply():u128;
+    balanceOf(account: string): u128;
+    transfer(to: string, amount: u128, memo: string|null): void;
+    allowance(owner:string, spender:string): u128;
+    approve(spender:string , amount: u128): bool;
+    transferFrom( from:string, to:string, amount:u128 ): bool;
     
     //event Transfer(address indexed from, address indexed to, uint256 value);
     //event Approval(address indexed owner, address indexed spender, uint256 value);
