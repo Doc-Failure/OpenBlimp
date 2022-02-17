@@ -1,8 +1,10 @@
 import INEP141 from "./INEP141";
 import { PersistentMap } from "near-sdk-as";
 import { u128 } from "near-sdk-as";
+import { Context } from "../../utils/Context";
 
-export abstract class NEP141 implements INEP141{
+//TODO - metadata
+export abstract class NEP141 extends Context implements INEP141{
     private _balances:PersistentMap<string, u128>  = new PersistentMap<string, u128>("balancesMap"); 
 
     //TODO - DOES IT WORK???
@@ -13,9 +15,10 @@ export abstract class NEP141 implements INEP141{
     private _symbol: string;
 
     constructor(name_ : string, symbol_:string) {
+        super();
         this._name = name_;
         this._symbol = symbol_;
-        this._totalSupply=new u128(0)
+        this._totalSupply=u128.Zero;
     }
 
     public name(): string{
@@ -36,14 +39,17 @@ export abstract class NEP141 implements INEP141{
     };
 
     public balanceOf(account: string): u128{
-        const res = this._balances.get(account);
-        return res ? res : new u128(0);
+        const res : u128 | null = this._balances.get(account);
+        return res ? res : u128.Zero;
     };
 
-    public transfer(to: string, amount: u128, memo: string|null): void{
+    public transfer(to: string, amount: u128, memo: string|null): bool{
+        const owner: string = super._msgSender();
+        this._transfer(owner, to, amount);
+        return true;
     };
     public allowance(owner:string, spender:string): u128{
-        return new u128(0);
+        return u128.Zero;
     };
     public approve(spender:string , amount: u128): bool{
         return false;
@@ -63,4 +69,31 @@ export abstract class NEP141 implements INEP141{
         //TODO - implement _afterTokenTransfer ?
 
     }
+
+    private _transfer(from: string, to:string, amount: u128): void{
+        assert(from != undefined, "NEP141: transfer from the zero address");
+        assert(to != undefined, "NEP141: transfer to the zero address");
+
+       /*  _beforeTokenTransfer(from, to, amount); */
+        const fromOldNalance:u128|null=this._balances.get(from);
+        const fromBalance: u128 = fromOldNalance ? fromOldNalance : u128.Zero;
+
+        assert(fromBalance >= amount, "NEP141: transfer amount exceeds balance");
+
+        const newFromBalance:u128= u128.sub(fromBalance, amount);
+        this._balances.set(from, newFromBalance);
+
+        const toOldBalance:u128|null=this._balances.get(to);
+        const toBalance:u128=toOldBalance?toOldBalance:u128.Zero;
+
+        const newToBalance:u128=u128.add(toBalance,amount)
+        this._balances.set(to, newToBalance);
+
+       /*  emit Transfer(from, to, amount); */
+       /*  _afterTokenTransfer(from, to, amount); */
+    }
+
+  /*   function increaseAllowance(address spender, uint256 addedValue) public virtual returns (bool) {
+        function decreaseAllowance(address spender, uint256 subtractedValue) public virtual returns (bool) { */
+
 }

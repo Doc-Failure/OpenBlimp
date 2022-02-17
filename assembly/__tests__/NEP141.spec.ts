@@ -1,15 +1,36 @@
 import { u128 } from "near-sdk-as";
 import { NEP141Mock } from "../contracts/token/mocks/NEP141Mock";
+import {shouldBehaveLikeERC20} from "./NEP141.behavior.spec";
+import {faker} from '@faker-js/faker';
 
 let token: NEP141Mock;
-/* function shouldBehaveLikeNEP141 (errorPrefix:string, initialSupply:string, initialHolder:string, recipient:string, anotherAccount:string) {} */
-  describe('total supply', function () {
+
+/* const [ initialHolder, recipient, anotherAccount ]:string = accounts; */
+const initialHolder:string = faker.name.findName();
+const recipient:string = faker.name.findName();
+const anotherAccount:string = faker.name.findName();
+
+const name:string = 'My Token';
+const symbol:string  = 'MTKN';
+
+const initialSupply = u128.Max;
+  describe('NEP141', function () {
 
     beforeEach(() => {
-      token = new NEP141Mock("100", "100", "aaa", new u128(10000));
+      token = new NEP141Mock(name, symbol, initialHolder, u128.Max);
     });
 
-    it('returns the total amount of tokens', () => {
-      expect<u128>(token.totalSupply()).toBe(new u128(10000), "totalSupply should be 10000");
+    it('has a name',() => {
+      expect<string>(token.name()).toBe(name);
     });
+
+    it('has a symbol', () => {
+      expect<string>(token.symbol()).toBe(symbol);
+    });
+
+    it('has 18 decimals',() => {
+      expect<u8>(token.decimals()).toBe(u8(18));
+    });
+
+    shouldBehaveLikeERC20("NEP141", token, initialSupply, initialHolder, recipient, anotherAccount);
   });
