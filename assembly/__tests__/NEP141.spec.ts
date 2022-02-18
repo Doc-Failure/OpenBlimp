@@ -1,4 +1,4 @@
-import { u128 } from "near-sdk-as";
+import { u128 , VMContext } from "near-sdk-as";
 import { NEP141Mock } from "../contracts/token/mocks/NEP141Mock";
 import { NEP141DecimalsMock } from "../contracts/token/mocks/NEP141DecimalsMock";
 /* import { shouldBehaveLikeNEP141 } from "./NEP141.behavior" */
@@ -89,18 +89,18 @@ class NEP141Test{
 
  shouldBehaveLikeNEP141Transfer():void {
   describe('when the recipient is not the zero address', ()=> {
-
-
     beforeEach(() => {
+      VMContext.setSigner_account_id(anotherAccount);
       token = new NEP141Mock(name, symbol, initialHolder, u128.Max);
     });
 
     describe('when the sender does not have enough balance', ()=> {
-
-     /*  it('reverts', () =>{
-        expect<bool>(token.transfer(recipient, new u128(100), "")).toBe(true);
-      }); */
+      throws('Should reverts', () =>{
+        const amountToSend:u128=new u128(100);
+        token.transfer(recipient, amountToSend, "");
+      });
     });
+
   })
 }}
 
