@@ -19,8 +19,6 @@ const initialSupply = u128.Max;
 class NEP141Test{
   testConstructorFields():void{
     describe('NEP141 Metadata', () => {
-
-
       beforeEach(() => {
         token = new NEP141Mock(name, symbol, initialHolder, u128.Max);
       });
@@ -47,59 +45,65 @@ class NEP141Test{
     });
   }
 
- shouldBehaveLikeNEP141():void {
+  shouldBehaveLikeNEP141():void {
 
-  describe('NEP141 behave', () => {
+    describe('NEP141 behave', () => {
 
-    beforeEach(() => {
-      token = new NEP141Mock(name, symbol, initialHolder, u128.Max);
-    });
-
-    describe('total supply', ()=> {
-      it('returns the total amount of tokens', ()=>{
-        expect<u128>(token.totalSupply()).toBe(u128.Max);
+      beforeEach(() => {
+        token = new NEP141Mock(name, symbol, initialHolder, u128.Max);
       });
-    });
 
-
-    describe('balanceOf', ()=> {
-      describe('when the requested account has no tokens', ()=> {
-        it('returns zero', ()=> {
-          expect<u128>( token.balanceOf(anotherAccount)).toBe(u128.Zero);
+      describe('total supply', ()=> {
+        it('returns the total amount of tokens', ()=>{
+          expect<u128>(token.totalSupply()).toBe(u128.Max);
         });
       });
 
-      describe('when the requested account has some tokens', ()=> {
-        it('returns the total amount of tokens', ()=> {
-          expect<u128>(token.balanceOf(initialHolder)).toBe(initialSupply);
+
+      describe('balanceOf', ()=> {
+        describe('when the requested account has no tokens', ()=> {
+          it('returns zero', ()=> {
+            expect<u128>( token.balanceOf(anotherAccount)).toBe(u128.Zero);
+          });
+        });
+
+        describe('when the requested account has some tokens', ()=> {
+          it('returns the total amount of tokens', ()=> {
+            expect<u128>(token.balanceOf(initialHolder)).toBe(initialSupply);
+          });
         });
       });
-    });
-
-    /* describe('transfer', ()=> {
-      shouldBehaveLikeERC20Transfer(errorPrefix, initialHolder, recipient, initialSupply,
-        function (from, to, value) {
-          return this.token.transfer(to, value, { from });
-        },
-      );
-    }); */
     })
   }
 
 
  shouldBehaveLikeNEP141Transfer():void {
   describe('when the recipient is not the zero address', ()=> {
-    beforeEach(() => {
-      VMContext.setSigner_account_id(anotherAccount);
-      token = new NEP141Mock(name, symbol, initialHolder, u128.Max);
-    });
 
     describe('when the sender does not have enough balance', ()=> {
-      throws('Should reverts', () =>{
+      beforeEach(() => {
+        VMContext.setSigner_account_id(anotherAccount);
+        token = new NEP141Mock(name, symbol, initialHolder, u128.Max);
+      });
+
+      throws('reverts', () =>{
         const amountToSend:u128=new u128(100);
         token.transfer(recipient, amountToSend, "");
       });
     });
+
+    describe('when the sender transfers all balance', ()=> {
+      beforeEach(() => {
+        VMContext.setSigner_account_id(initialHolder);
+        token = new NEP141Mock(name, symbol, initialHolder, u128.Max);
+      });
+
+      it('transfers the requested amount', ()=>{
+        token.transfer(recipient, u128.Max, null);
+        expect(token.balanceOf(initialHolder)).toBe(u128.Zero);
+        expect(token.balanceOf(recipient)).toBe(u128.Max);
+      });
+    })
 
   })
 }}
