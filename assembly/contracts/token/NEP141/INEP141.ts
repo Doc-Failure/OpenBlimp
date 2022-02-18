@@ -1,6 +1,6 @@
 import { u128 } from "near-sdk-as";
 
-export default interface INEP141 {
+export interface INEP141 {
     totalSupply():u128;
     balanceOf(account: string): u128;
     transfer(to: string, amount: u128, memo: string|null): bool;

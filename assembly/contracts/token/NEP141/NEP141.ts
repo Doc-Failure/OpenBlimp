@@ -1,10 +1,12 @@
-import INEP141 from "./INEP141";
+import { INEP141 } from "./INEP141";
 import { PersistentMap } from "near-sdk-as";
 import { u128 } from "near-sdk-as";
 import { Context } from "../../utils/Context";
+import INEP141Metadata from "./extensions/INEP141Metadata";
 
 //TODO - metadata
-export abstract class NEP141 extends Context implements INEP141{
+//extends INEP141 ???
+export abstract class NEP141 extends Context implements INEP141Metadata{
     private _balances:PersistentMap<string, u128>  = new PersistentMap<string, u128>("balancesMap"); 
 
     //TODO - DOES IT WORK???
@@ -71,8 +73,8 @@ export abstract class NEP141 extends Context implements INEP141{
     }
 
     private _transfer(from: string, to:string, amount: u128): void{
-        assert(from != undefined, "NEP141: transfer from the zero address");
-        assert(to != undefined, "NEP141: transfer to the zero address");
+        assert(from != null, "NEP141: transfer from the zero address");
+        assert(to != null, "NEP141: transfer to the zero address");
 
        /*  _beforeTokenTransfer(from, to, amount); */
         const fromOldNalance:u128|null=this._balances.get(from);
