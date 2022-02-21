@@ -74,7 +74,7 @@ export abstract class NEP141 extends Context implements INEP141Metadata{
 
     private _transfer(from: string, to:string, amount: u128): void{
         assert(from != null, "NEP141: transfer from the zero address");
-        assert(to != null, "NEP141: transfer to the zero address");
+        assert(to.length > 0, "NEP141: transfer to the zero address");
 
        /*  _beforeTokenTransfer(from, to, amount); */
         const fromOldNalance:u128|null=this._balances.get(from);
@@ -95,7 +95,33 @@ export abstract class NEP141 extends Context implements INEP141Metadata{
        /*  _afterTokenTransfer(from, to, amount); */
     }
 
+    protected _burn(account:string, amount: u128): void{
+        assert(account.length > 0, "NEP141: burn from the zero address");
+
+       /*  _beforeTokenTransfer(account, address(0), amount); */
+
+        const oldAccountBalance: u128 | null = this._balances.get(account);
+        const accountBalance: u128 = oldAccountBalance?oldAccountBalance:u128.Zero;
+
+        assert(accountBalance >= amount, "NEP141: burn amount exceeds balance");
+
+        this._balances.set(account, u128.sub(accountBalance, amount));
+        this._totalSupply=u128.sub(this._totalSupply, amount);
+
+       /*  emit Transfer(account, address(0), amount); */
+       /*  _afterTokenTransfer(account, address(0), amount); */
+    }
+
+    /* private _approve(owner: string, spender: string, amount: u128){
+        assert(owner.length>0, "NEP141: approve from the zero address");
+        assert(spender.length>0, "NEP141: approve to the zero address");
+
+        const _allowances.get(owner)
+        [spender] = amount; */
+       /*  emit Approval(owner, spender, amount); */
+   /*  } */
+
+   
   /*   function increaseAllowance(address spender, uint256 addedValue) public virtual returns (bool) {
         function decreaseAllowance(address spender, uint256 subtractedValue) public virtual returns (bool) { */
-
 }

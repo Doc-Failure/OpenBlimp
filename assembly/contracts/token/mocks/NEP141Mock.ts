@@ -7,4 +7,12 @@ export class NEP141Mock extends NEP141 {
         super(name, symbol)
         super._mint(initialAccount, initialBalance);
     }
+
+    public mint(account: string, amount: u128):void {
+        super._mint(account, amount);
+    }
+
+    public burn(account: string, amount: u128):void {
+        super._burn(account, amount);
+    }
 }

@@ -15,7 +15,6 @@
     "rabin-wasm": "^0.1.5"
   },
   "devDependencies": {
-    "@faker-js/faker": "^6.0.0-alpha.6",
     "assemblyscript": "^0.19.22",
     "near-sdk-as": "^3.2.3"
   },
