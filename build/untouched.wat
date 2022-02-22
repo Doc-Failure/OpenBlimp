@@ -66,8 +66,8 @@
  (global $~lib/as-bignum/integer/u128/HEX_CHARS i32 (i32.const 7200))
  (global $~lib/as-bignum/utils/HEX_CHARS i32 (i32.const 7200))
  (global $assembly/contracts/token/NEP141/NEP141/NEP141 i32 (i32.const 3))
- (global $~lib/rt/__rtti_base i32 (i32.const 7328))
- (global $~lib/memory/__heap_base i32 (i32.const 7596))
+ (global $~lib/rt/__rtti_base i32 (i32.const 7520))
+ (global $~lib/memory/__heap_base i32 (i32.const 7788))
  (memory $0 1)
  (data (i32.const 12) "<\00\00\00\00\00\00\00\00\00\00\00\01\00\00\00(\00\00\00A\00l\00l\00o\00c\00a\00t\00i\00o\00n\00 \00t\00o\00o\00 \00l\00a\00r\00g\00e\00\00\00\00\00")
  (data (i32.const 76) "<\00\00\00\00\00\00\00\00\00\00\00\01\00\00\00\1e\00\00\00~\00l\00i\00b\00/\00r\00t\00/\00s\00t\00u\00b\00.\00t\00s\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00")
@@ -172,7 +172,9 @@
  (data (i32.const 7100) "L\00\00\00\00\00\00\00\00\00\00\00\01\00\00\00<\00\00\00~\00l\00i\00b\00/\00a\00s\00-\00b\00i\00g\00n\00u\00m\00/\00i\00n\00t\00e\00g\00e\00r\00/\00u\001\002\008\00.\00t\00s\00")
  (data (i32.const 7180) "<\00\00\00\00\00\00\00\00\00\00\00\01\00\00\00 \00\00\000\001\002\003\004\005\006\007\008\009\00a\00b\00c\00d\00e\00f\00\00\00\00\00\00\00\00\00\00\00\00\00")
  (data (i32.const 7244) "L\00\00\00\00\00\00\00\00\00\00\00\01\00\00\000\00\00\00O\00v\00e\00r\00f\00l\00o\00w\00 \00d\00u\00r\00i\00n\00g\00 \00a\00d\00d\00i\00s\00i\00o\00n\00\00\00\00\00\00\00\00\00\00\00\00\00")
- (data (i32.const 7328) "!\00\00\00 \00\00\00\00\00\00\00 \00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\04\00\00\00 \00\00\00\00\00\00\00 \00\00\00\06\00\00\00 \00\00\00\00\00\00\00 \00\00\00\08\00\00\00 \00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00A\00\00\00\02\00\00\00 \00\00\00\00\00\00\00\00\00\00\00\0e\00\00\00 \00\00\00\00\00\00\00\02A\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\0c\00\00\00\10A\82\00\00\00\00\00\00\00\00\00\0c\00\00\00\02A\00\00\00\00\00\00\00\00\00\00\0c\00\00\00 \00\00\00\0c\00\00\00 \00\00\00\19\00\00\00 \00\00\00\0c\00\00\00 \00\00\00\0c\00\00\00 \00\00\00\0c\00\00\00B\00\00\00\00\00\00\00\00\00\00\00\1e\00\00\00\00\00\00\00\00\00\00\00\02\t\00\00\00\00\00\00A\08\00\00\02\00\00\00")
+ (data (i32.const 7324) "\\\00\00\00\00\00\00\00\00\00\00\00\01\00\00\00D\00\00\00N\00E\00P\001\004\001\00:\00 \00b\00u\00r\00n\00 \00f\00r\00o\00m\00 \00t\00h\00e\00 \00z\00e\00r\00o\00 \00a\00d\00d\00r\00e\00s\00s\00\00\00\00\00\00\00\00\00")
+ (data (i32.const 7420) "\\\00\00\00\00\00\00\00\00\00\00\00\01\00\00\00F\00\00\00N\00E\00P\001\004\001\00:\00 \00b\00u\00r\00n\00 \00a\00m\00o\00u\00n\00t\00 \00e\00x\00c\00e\00e\00d\00s\00 \00b\00a\00l\00a\00n\00c\00e\00\00\00\00\00\00\00")
+ (data (i32.const 7520) "!\00\00\00 \00\00\00\00\00\00\00 \00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\04\00\00\00 \00\00\00\00\00\00\00 \00\00\00\06\00\00\00 \00\00\00\00\00\00\00 \00\00\00\08\00\00\00 \00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00A\00\00\00\02\00\00\00 \00\00\00\00\00\00\00\00\00\00\00\0e\00\00\00 \00\00\00\00\00\00\00\02A\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\0c\00\00\00\10A\82\00\00\00\00\00\00\00\00\00\0c\00\00\00\02A\00\00\00\00\00\00\00\00\00\00\0c\00\00\00 \00\00\00\0c\00\00\00 \00\00\00\19\00\00\00 \00\00\00\0c\00\00\00 \00\00\00\0c\00\00\00 \00\00\00\0c\00\00\00B\00\00\00\00\00\00\00\00\00\00\00\1e\00\00\00\00\00\00\00\00\00\00\00\02\t\00\00\00\00\00\00A\08\00\00\02\00\00\00")
  (table $0 1 funcref)
  (elem $0 (i32.const 1))
  (export "NEP141" (global $assembly/contracts/token/NEP141/NEP141/NEP141))
@@ -188,6 +190,7 @@
  (export "NEP141#_msgSender" (func $assembly/contracts/utils/Context/Context#_msgSender))
  (export "NEP141#constructor" (func $assembly/contracts/token/NEP141/NEP141/NEP141#constructor))
  (export "NEP141#_mint" (func $assembly/contracts/token/NEP141/NEP141/NEP141#_mint))
+ (export "NEP141#_burn" (func $assembly/contracts/token/NEP141/NEP141/NEP141#_burn))
  (export "memory" (memory $0))
  (start $~start)
  (func $~lib/rt/stub/maybeGrowMemory (param $0 i32)
@@ -11273,8 +11276,9 @@
    unreachable
   end
   local.get $2
+  call $~lib/string/String#get:length
   i32.const 0
-  call $~lib/string/String.__ne
+  i32.gt_s
   i32.eqz
   if
    i32.const 4464
@@ -11462,6 +11466,98 @@
   local.get $2
   call $~lib/as-bignum/integer/safe/u128/u128.add
   call $~lib/near-sdk-core/collections/persistentMap/PersistentMap<~lib/string/String,~lib/as-bignum/integer/safe/u128/u128>#set
+ )
+ (func $assembly/contracts/token/NEP141/NEP141/NEP141#_burn (param $0 i32) (param $1 i32) (param $2 i32)
+  (local $3 i32)
+  (local $4 i32)
+  (local $5 i32)
+  (local $6 i32)
+  (local $7 i32)
+  (local $8 i32)
+  (local $9 i64)
+  (local $10 i64)
+  local.get $1
+  call $~lib/string/String#get:length
+  i32.const 0
+  i32.gt_s
+  i32.eqz
+  if
+   i32.const 7344
+   i32.const 4352
+   i32.const 99
+   i32.const 9
+   call $~lib/builtins/abort
+   unreachable
+  end
+  local.get $0
+  i32.load
+  local.get $1
+  i32.const 0
+  call $~lib/near-sdk-core/collections/persistentMap/PersistentMap<~lib/string/String,~lib/as-bignum/integer/safe/u128/u128>#get
+  local.set $3
+  local.get $3
+  if (result i32)
+   local.get $3
+  else
+   i32.const 0
+   i64.const 0
+   i64.const 0
+   call $~lib/as-bignum/integer/safe/u128/u128#constructor
+  end
+  local.set $4
+  local.get $4
+  local.set $6
+  local.get $2
+  local.set $5
+  local.get $6
+  local.set $8
+  local.get $5
+  local.set $7
+  local.get $8
+  i64.load offset=8
+  local.set $9
+  local.get $7
+  i64.load offset=8
+  local.set $10
+  local.get $9
+  local.get $10
+  i64.eq
+  if (result i32)
+   local.get $8
+   i64.load
+   local.get $7
+   i64.load
+   i64.lt_u
+  else
+   local.get $9
+   local.get $10
+   i64.lt_u
+  end
+  i32.eqz
+  i32.const 0
+  i32.ne
+  i32.eqz
+  if
+   i32.const 7440
+   i32.const 4352
+   i32.const 106
+   i32.const 9
+   call $~lib/builtins/abort
+   unreachable
+  end
+  local.get $0
+  i32.load
+  local.get $1
+  local.get $4
+  local.get $2
+  call $~lib/as-bignum/integer/safe/u128/u128.sub
+  call $~lib/near-sdk-core/collections/persistentMap/PersistentMap<~lib/string/String,~lib/as-bignum/integer/safe/u128/u128>#set
+  local.get $0
+  local.get $0
+  i32.load offset=8
+  local.get $2
+  call $~lib/as-bignum/integer/safe/u128/u128.sub
+  call $assembly/contracts/token/NEP141/NEP141/NEP141#set:_totalSupply
  )
  (func $~lib/as-bignum/integer/safe/u128/u128#clone (param $0 i32) (result i32)
   i32.const 0

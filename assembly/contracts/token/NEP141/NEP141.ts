@@ -1,4 +1,3 @@
-import { INEP141 } from "./INEP141";
 import { PersistentMap } from "near-sdk-as";
 import { u128 } from "near-sdk-as";
 import { Context } from "../../utils/Context";
@@ -50,6 +49,7 @@ export abstract class NEP141 extends Context implements INEP141Metadata{
         this._transfer(owner, to, amount);
         return true;
     };
+    
     public allowance(owner:string, spender:string): u128{
         return u128.Zero;
     };
@@ -121,7 +121,7 @@ export abstract class NEP141 extends Context implements INEP141Metadata{
        /*  emit Approval(owner, spender, amount); */
    /*  } */
 
-   
+
   /*   function increaseAllowance(address spender, uint256 addedValue) public virtual returns (bool) {
         function decreaseAllowance(address spender, uint256 subtractedValue) public virtual returns (bool) { */
 }
