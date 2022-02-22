@@ -1,6 +1,6 @@
 {
   "name": "openblimp",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "A library to help you develop better AssemblyScript smart contracts for the Near Protocol",
   "types": "assembly/index.ts",
   "repository": "https://github.com/Doc-Failure/OpenBlimp.git",
