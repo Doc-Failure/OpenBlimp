@@ -1,6 +1,6 @@
 {
   "name": "openblimp",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "description": "A library to help you develop better AssemblyScript smart contracts for the Near Protocol",
   "types": "assembly/index.ts",
   "repository": "https://github.com/Doc-Failure/OpenBlimp.git",
@@ -21,6 +21,7 @@
   "scripts": {
     "asbuild:untouched": "asc assembly/index.ts --target debug",
     "asbuild:optimized": "asc assembly/index.ts --target release",
+    "build": "npm run build:release",
     "build:release": "asb --target release",
     "asbuild": "npm run asbuild:untouched && npm run asbuild:optimized",
     "test": "asp",
