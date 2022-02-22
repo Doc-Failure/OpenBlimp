@@ -1,14 +1,20 @@
 {
   "name": "openblimp",
-  "version": "0.0.4",
+  "version": "0.1.5",
   "description": "A library to help you develop better AssemblyScript smart contracts for the Near Protocol",
+  "main": "js/index.js",
   "types": "assembly/index.ts",
   "repository": "https://github.com/Doc-Failure/OpenBlimp.git",
   "author": "<stefano.convertino@gmail.com>",
   "license": "MIT",
   "private": false,
   "files": [
-    "dist"
+    "assembly/",
+    "build/",
+    "README.md",
+    "LICENSE",
+    "package.json",
+    "yarn.lock"
   ],
   "dependencies": {
     "@assemblyscript/loader": "^0.19.22",
@@ -19,12 +25,10 @@
     "near-sdk-as": "^3.2.3"
   },
   "scripts": {
-    "asbuild:untouched": "asc assembly/index.ts --target debug",
-    "asbuild:optimized": "asc assembly/index.ts --target release",
-    "build": "npm run build:release",
-    "build:release": "asb --target release",
-    "asbuild": "npm run asbuild:untouched && npm run asbuild:optimized",
-    "test": "asp",
+    "build": "yarn build:release",
+    "build:debug": "npx asc assembly/index.ts -b build/debug/bignum.wasm -t build/debug/bignum.wat --debug --sourceMap --runtime stub",
+    "build:release": "npx asc assembly/index.ts -b build/release/bignum.wasm -t build/release/bignum.wat -O3 --sourceMap --runtime stub",
+    "test": "asp --verbose",
     "prepublishOnly": "npm run build"
   }
 }
