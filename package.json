@@ -1,6 +1,6 @@
 {
   "name": "openblimp",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "A library to help you develop better AssemblyScript smart contracts for the Near Protocol",
   "main": "js/index.js",
   "types": "assembly/index.ts",
