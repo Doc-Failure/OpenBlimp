@@ -17,5 +17,6 @@
     }
   },
   "extends": "near-sdk-as/asconfig.json",
+  "workspaces": ["assembly"],
   "options": {}
 }

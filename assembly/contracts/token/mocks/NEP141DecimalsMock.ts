@@ -10,7 +10,7 @@ export class NEP141DecimalsMock extends NEP141 {
         this._decimals = decimals_;
     }
 
-    public decimals():u8 {
+   /*  public decimals():u8 {
         return this._decimals;
-    }
+    } */
 }

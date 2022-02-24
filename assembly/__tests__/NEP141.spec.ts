@@ -21,21 +21,21 @@ class NEP141Test{
         token = new NEP141Mock(name, symbol, initialHolder, initialSupply);
       });    
       it('has a name',() => {
-        expect<string>(token.name()).toBe(name, "Name Test Broken");
+        expect<string>(token.name).toBe(name, "Name Test Broken");
       });    
       it('has a symbol', () => {
-        expect<string>(token.symbol()).toBe(symbol);
+        expect<string>(token.symbol).toBe(symbol);
       });    
       it('has 18 decimals',() => {
-        expect<u8>(token.decimals()).toBe(u8(18));
+        expect<u8>(token.decimals).toBe(u8(18));
       });   
-      describe('set decimals', () => {
+      /* describe('set decimals', () => {
         const decimals:u8 = u8.MAX_VALUE;
         it('can set decimals during construction', () => {
           const tokenDec = new NEP141DecimalsMock(name, symbol, decimals);
           expect<u8>(tokenDec.decimals()).toBe(decimals);
         });
-      });
+      }); */
 
 
       it('_mint',() => {
@@ -50,13 +50,13 @@ class NEP141Test{
             token.mint(recipient, amount);
           });
     
-          it('increments totalSupply', () => {
+          it('increments ft_total_supply', () => {
             const expectedSupply:u128 = u128.add(initialSupply, amount);
-            expect(token.totalSupply()).toBe(expectedSupply);
+            expect<u128>(token.ft_total_supply()).toBe(expectedSupply);
           });
     
           it('increments recipient balance', () => {
-            expect(token.balanceOf(recipient)).toBe(amount);
+            expect<u128>(token.ft_balance_of(recipient)).toBe(amount);
           });
     
           /* it('emits Transfer event', () => {
@@ -88,14 +88,14 @@ class NEP141Test{
             token.burn(initialHolder, initialSupply);
           });
 
-          it('decrements totalSupply', ()=> {
-            const expectedSupply = u128.sub(initialSupply,initialSupply);
-            expect( token.totalSupply()).toBe(expectedSupply);
+          it('decrements ft_total_supply', ()=> {
+            const expectedSupply:u128 = u128.sub(initialSupply,initialSupply);
+            expect<u128>( token.ft_total_supply()).toBe(expectedSupply);
           });
 
           it('decrements initialHolder balance', () => {
-            const expectedBalance = u128.sub(initialSupply,initialSupply);
-            expect( token.balanceOf(initialHolder)).toBe(expectedBalance);
+            const expectedBalance:u128 = u128.sub(initialSupply,initialSupply);
+            expect<u128>( token.ft_balance_of(initialHolder)).toBe(expectedBalance);
           });
 
         /*   it('emits Transfer event', async function () {
@@ -114,14 +114,14 @@ class NEP141Test{
             token.burn(initialHolder, u128.sub(initialSupply,new u128(1)));
           });
 
-          it('decrements totalSupply', ()=> {
-            const expectedSupply = u128.sub(initialSupply,u128.sub(initialSupply,new u128(1)));
-            expect( token.totalSupply()).toBe(expectedSupply);
+          it('decrements ft_total_supply', ()=> {
+            const expectedSupply:u128 = u128.sub(initialSupply,u128.sub(initialSupply,new u128(1)));
+            expect<u128>( token.ft_total_supply()).toBe(expectedSupply);
           });
 
           it('decrements initialHolder balance', () => {
-            const expectedBalance = u128.sub(initialSupply,u128.sub(initialSupply,new u128(1)));
-            expect( token.balanceOf(initialHolder)).toBe(expectedBalance);
+            const expectedBalance:u128 = u128.sub(initialSupply,u128.sub(initialSupply,new u128(1)));
+            expect<u128>( token.ft_balance_of(initialHolder)).toBe(expectedBalance);
           });
 
         /*   it('emits Transfer event', async function () {
@@ -144,18 +144,18 @@ class NEP141Test{
       });
       describe('total supply', ()=> {
         it('returns the total amount of tokens', ()=>{
-          expect<u128>(token.totalSupply()).toBe(initialSupply);
+          expect<u128>(token.ft_total_supply()).toBe(initialSupply);
         });
       });
-      describe('balanceOf', ()=> {
+      describe('ft_balance_of', ()=> {
         describe('when the requested account has no tokens', ()=> {
           it('returns zero', ()=> {
-            expect<u128>( token.balanceOf(anotherAccount)).toBe(u128.Zero);
+            expect<u128>( token.ft_balance_of(anotherAccount)).toBe(u128.Zero);
           });
         });
         describe('when the requested account has some tokens', ()=> {
           it('returns the total amount of tokens', ()=> {
-            expect<u128>(token.balanceOf(initialHolder)).toBe(initialSupply);
+            expect<u128>(token.ft_balance_of(initialHolder)).toBe(initialSupply);
           });
         });
       });
@@ -172,7 +172,7 @@ class NEP141Test{
       });
       throws('reverts', () =>{
         const amountToSend:u128=new u128(100);
-        token.transfer(recipient, amountToSend, "");
+        token.ft_transfer(recipient, amountToSend.toString(), "");
       }, "Transfer amount exceeds balance");
     });
 
@@ -182,9 +182,9 @@ class NEP141Test{
         token = new NEP141Mock(name, symbol, initialHolder, initialSupply);
       });
       it('transfers the requested amount', ()=>{
-        token.transfer(recipient, initialSupply, null);
-        expect(token.balanceOf(initialHolder)).toBe(u128.Zero);
-        expect(token.balanceOf(recipient)).toBe(initialSupply);
+        token.ft_transfer(recipient, initialSupply.toString(), null);
+        expect(token.ft_balance_of(initialHolder)).toBe(u128.Zero);
+        expect(token.ft_balance_of(recipient)).toBe(initialSupply);
       });
     })
 
@@ -194,9 +194,9 @@ class NEP141Test{
         token = new NEP141Mock(name, symbol, initialHolder, initialSupply);
       });
       it('transfers the requested amount', ()=> {
-       token.transfer(recipient, u128.Zero, "");
-       expect(token.balanceOf(initialHolder)).toBe(initialSupply);
-       expect(token.balanceOf(recipient)).toBe(u128.Zero);
+       token.ft_transfer(recipient, u128.Zero.toString(), "");
+       expect(token.ft_balance_of(initialHolder)).toBe(initialSupply);
+       expect(token.ft_balance_of(recipient)).toBe(u128.Zero);
       });
     });
 
@@ -207,7 +207,7 @@ class NEP141Test{
       });
       throws('throws', () =>{
         const amountToSend:u128=new u128(100);
-        token.transfer("", amountToSend, "");
+        token.ft_transfer("", amountToSend.toString(), "");
       }, "Transfer to the zero address");
     });
   });
