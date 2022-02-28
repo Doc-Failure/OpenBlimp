@@ -1,86 +1,39 @@
-import { ContractPromise, ContractPromiseResult, PersistentMap, PromiseStatus } from "near-sdk-as";
+import { ContractPromise, ContractPromiseResult, PersistentMap, PromiseStatus, storage } from "near-sdk-as";
 import { u128 } from "near-sdk-as";
 import { AccountId, Balance } from "../../utils/utils";
 import { Context } from "../../utils/Context";
-/* import INEP141Metadata from "./extensions/INEP141Metadata"; */
-import { INEP141 } from "./INEP141";
+import { INEP141 as FungibleTokenCore } from "./Interfaces/INEP141";
+import { INEP148 as FungibleTokenMetadata} from "./Interfaces/INEP148";
+import { Metadata } from "./utils";
 
-//TODO - metadata
-
-class FungibleTokenMetadata{
-
-    public name: string;
-    public symbol: string;
-    public decimals: number;
-    public spec: string;
-
-    public icon: string;
-    public reference: string;
-    public reference_hash: string;
-
-    constructor(){
-        this.name="this._name";
-        this.symbol="symbl";
-        this.decimals=18;
-        this.spec="ft-1.0.0";
-
-        this.icon="";
-        this.reference="";
-        this.reference_hash="";
-    }
-}
-
-export abstract class NEP141 extends Context implements INEP141{
-    private _balances:PersistentMap<string, u128>  = new PersistentMap<string, u128>("balancesMap"); 
+@nearBindgen
+export abstract class FungibleToken extends Context implements FungibleTokenCore, FungibleTokenMetadata{
+    private _balances:PersistentMap<string, Balance>  = new PersistentMap<string, Balance>("balancesMap"); 
 
     //TODO - DOES IT WORK???
     private _allowances:PersistentMap<string, PersistentMap<string, u128>>  = new PersistentMap<string, PersistentMap<string, u128>> ("allowancesMap"); 
 
-    public accounts:PersistentMap<AccountId, Balance> = new PersistentMap<string, u128>("accountMap");
+    /* public accounts:PersistentMap<AccountId, Balance> = new PersistentMap<string, u128>("accountMap"); */
     public total_supply:u128;
     public owner_id:string;
-    public metadata:FungibleTokenMetadata;
-    private _totalSupply:u128;
-    private _name: string;
-    private _symbol: string;
-/* 
-    public name:string;
+    metadata: Metadata;
 
-    public symbol: string; */
-/* 
-    public spec: string;
-    public icon: string|null;
-    public reference: string|null;
-    public reference_hash: string|null; */
-
-    public name: string;
-    public symbol: string;
-
-    public spec: string;
-
-    constructor(name_ : string, symbol_:string) {
+    //, icon: string|null, reference: string|null, reference_hash:string|null
+    constructor(name:string, symbol: string, decimals: u8){
         super();
-        this._name = name_;
-        this._symbol = symbol_;
-        this._totalSupply=u128.Zero;
-        this.metadata=new FungibleTokenMetadata();
-        this.total_supply=new u128(10*(10^18));
-        this.owner_id="doc_failure.testnet";
-        this.name="My Token";
-        this.symbol="MTKN";
-        this.decimals=18;
-        this.spec="ft-1.0.0";
+        this.metadata={ _name:name, _symbol:symbol, _decimals:decimals, _spec:"vt1.0.0", _icon:null, _reference:null, _reference_hash:null }
     }
 
-    public ft_metadata(): FungibleTokenMetadata {
-        return this.metadata
+    private _saveClass(): void{
+        /* storage.set("metadata", this) */
     }
 
-    //TODO - let's talk about this, I'm not sure about the openzeppelin implementation
-    public decimals:u8;
+    public ft_metadata(): Metadata {
+        return this.metadata;
+    }
 
     public ft_total_supply():u128{
-        return this._totalSupply;
+        return this.total_supply;
     };
 
     public ft_balance_of(account: string): u128{
@@ -153,24 +106,25 @@ export abstract class NEP141 extends Context implements INEP141{
     public allowance(owner:string, spender:string): u128{
         return u128.Zero;
     };
+
     public approve(spender:string , amount: u128): bool{
         return false;
     };
+
     public transferFrom( from:string, to:string, amount:u128 ): bool{
         return false;
     };
 
     protected ft_mint(account: string, amount: u128): void {
-        assert(account.length!=0);
-        //TODO - implement _beforeTokenTransfer ?
-        let res : u128 = u128.add(this._totalSupply,amount);
-        this._totalSupply=res;
+        assert(account.length != 0, "NEP141: mint to the zero address");
+        /*  _beforeTokenTransfer(address(0), account, amount); */
+
+        let res : u128 = u128.add(this.total_supply, amount);
+        this.total_supply=res;
+        
         this._balances.set(account, u128.add(this.balanceOf(account), amount));
-
-        this.accounts.set(account, u128.add(this.balanceOf(account), amount));
-        //TODO - implement emit Transfer(address(0), account, amount); ?
-        //TODO - implement _afterTokenTransfer ?
-
+        /* emit Transfer(address(0), account, amount); */
+        /*  _afterTokenTransfer(address(0), account, amount); */
     }
 
     private _transfer(from: string, to:string, amount: u128): void{
@@ -207,7 +161,7 @@ export abstract class NEP141 extends Context implements INEP141{
         assert(accountBalance >= amount, "NEP141: burn amount exceeds balance");
 
         this._balances.set(account, u128.sub(accountBalance, amount));
-        this._totalSupply=u128.sub(this._totalSupply, amount);
+        this.total_supply=u128.sub(this.total_supply, amount);
 
        /*  emit Transfer(account, address(0), amount); */
        /*  _afterTokenTransfer(account, address(0), amount); */
@@ -228,7 +182,4 @@ export abstract class NEP141 extends Context implements INEP141{
        /*  emit Approval(owner, spender, amount); */
    /*  } */
 
-
-  /*   function increaseAllowance(address spender, uint256 addedValue) public virtual returns (bool) {
-        function decreaseAllowance(address spender, uint256 subtractedValue) public virtual returns (bool) { */
 }

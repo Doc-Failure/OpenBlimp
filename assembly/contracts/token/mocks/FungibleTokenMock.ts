@@ -1,11 +1,11 @@
-import { NEP141 } from "../NEP141/NEP141";
+import { FungibleToken } from "../FungibleToken";
 import { u128 } from "near-sdk-as";
 
 /* Class for test purpose only */
+export class FungibleTokenMock extends FungibleToken {
 
-export class NEP141Mock extends NEP141 {
-    constructor( name: string, symbol: string, initialAccount: string, initialBalance: u128){
-        super(name, symbol)
+    constructor( name: string, symbol: string, decimals: u8, initialAccount: string, initialBalance: u128){
+        super(name, symbol, decimals)
         super.ft_mint(initialAccount, initialBalance);
     }
 

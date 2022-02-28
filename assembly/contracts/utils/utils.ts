@@ -17,7 +17,6 @@ export type Gas = u64;
 /**
  * Amounts, Balances, and Money in NEAR is are u128.
  */
-
 export type Amount = u128;
 
 export type Balance = Amount;

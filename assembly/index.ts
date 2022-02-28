@@ -1,1 +1,3 @@
-export { NEP141 } from "./contracts/token/NEP141/NEP141";
+export { FungibleToken } from "./contracts/token/FungibleToken";
+import * as token from "./contracts/test";
+export {token};
