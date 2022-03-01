@@ -1,6 +1,6 @@
 /* import { u128 } from "near-sdk-as"; */
 
-import { ContractPromise, PromiseStatus, u128 } from "near-sdk-as";
+import { ContractPromise, u128 } from "near-sdk-as";
 
 export interface INEP141 {
     ft_total_supply():u128;

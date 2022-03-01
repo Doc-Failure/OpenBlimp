@@ -1,4 +1,4 @@
-import { FungibleToken } from "./token/FungibleToken";
+import { FungibleToken } from "./token/FungibleToken/preset/FungibleToken";
 import { u128, storage } from "near-sdk-as";
 
 /* @nearBindgen

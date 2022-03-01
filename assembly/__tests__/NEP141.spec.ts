@@ -1,6 +1,6 @@
 import { u128 , VMContext } from "near-sdk-as";
 import { FungibleTokenMock } from "../contracts/token/mocks/FungibleTokenMock";
-import { FungibleTokenDecimalsMock } from "../contracts/token/mocks/FungibleTokenDecimalsMock";
+import { FungibleTokenMetadata } from "../contracts/token/FungibleToken/utils"
 
 let token: FungibleTokenMock;
 
@@ -10,33 +10,44 @@ const anotherAccount:string = "account#3.testnet";
 
 const name:string = 'My Token';
 const symbol:string  = 'MTKN';
+let decimals:u8 = 18;
 
+const metadata: FungibleTokenMetadata = {
+  name: name,
+  symbol: symbol,
+  decimals: decimals,
+  spec: "vt1.0.0",
+  icon: null,
+  reference: null,
+  reference_hash: null
+}
 const initialSupply = u128.div(u128.Max, new u128(2));
 
 let amount : u128 = new u128(50);
 class NEP141Test{
   testConstructorFields():void{
-    describe('NEP141', () => {
-      beforeEach(() => {
-        token = new FungibleTokenMock(name, symbol, 10,initialHolder, initialSupply);
-      });    
-      it('has a name',() => {
-        /* expect<string>(token.ft_metadata().name).toBe(name, "Name Test Broken"); */
-      });    
-    /*   it('has a symbol', () => {
-        expect<string>(token.symbol).toBe(symbol);
-      });    
-      it('has 18 decimals',() => {
-        expect<u8>(token.decimals).toBe(u8(18));
-      });    */
-      /* describe('set decimals', () => {
+    describe('NEP148', () => {
+      it('has metadata',() => {
+        token = new FungibleTokenMock(name, symbol, decimals, initialHolder, initialSupply);
+        expect<FungibleTokenMetadata>(token.ft_metadata()).toStrictEqual(metadata, "Metadata Test Broken");
+      })  
+      it('has 24 decimals',() => {
+        token = new FungibleTokenMock(name, symbol, 24, initialHolder, initialSupply);
+        expect<u8>(token.ft_metadata().decimals).toBe(24);
+      });
+        describe('set decimals', () => {
         const decimals:u8 = u8.MAX_VALUE;
         it('can set decimals during construction', () => {
-          const tokenDec = new FungibleTokenDecimalsMock(name, symbol, decimals);
-          expect<u8>(tokenDec.decimals()).toBe(decimals);
-        });
-      }); */
+          const tokenDec = new FungibleTokenMock(name, symbol, decimals, initialHolder, initialSupply);
+          expect<u8>(tokenDec.ft_metadata().decimals).toBe(decimals);
+       });
+      });
+    });
 
+    describe('NEP141', () => {
+      beforeEach(() => {
+        token = new FungibleTokenMock(name, symbol, decimals,initialHolder, initialSupply);
+      });    
 
       it('_mint',() => {
         it('rejects a null account', () => { 
@@ -140,7 +151,7 @@ class NEP141Test{
   shouldBehaveLikeNEP141():void {
     describe('NEP141 behave', () => {
       beforeEach(() => {
-        token = new FungibleTokenMock(name, symbol, 10,initialHolder, initialSupply);
+        token = new FungibleTokenMock(name, symbol, decimals,initialHolder, initialSupply);
       });
       describe('total supply', ()=> {
         it('returns the total amount of tokens', ()=>{
@@ -168,7 +179,7 @@ class NEP141Test{
     describe('when the sender does not have enough balance', ()=> {
       beforeEach(() => {
         VMContext.setSigner_account_id(anotherAccount);
-        token = new FungibleTokenMock(name, symbol, 10,initialHolder, initialSupply);
+        token = new FungibleTokenMock(name, symbol, decimals,initialHolder, initialSupply);
       });
       throws('reverts', () =>{
         const amountToSend:u128=new u128(100);
@@ -191,7 +202,7 @@ class NEP141Test{
     describe('when the sender transfers zero tokens', function () {
       beforeEach(() => {
         VMContext.setSigner_account_id(initialHolder);
-        token = new FungibleTokenMock(name, symbol, 10,initialHolder, initialSupply);
+        token = new FungibleTokenMock(name, symbol, decimals,initialHolder, initialSupply);
       });
       it('transfers the requested amount', ()=> {
        token.ft_transfer(recipient, u128.Zero.toString(), "");

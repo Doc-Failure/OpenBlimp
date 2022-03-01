@@ -1,21 +1,12 @@
-interface IMetadata {
-    _name: string;
-    _symbol: string;
-    _decimals: u8;
-    _spec: string;
-    _icon: string|null;
-    _reference: string|null;
-    _reference_hash: string|null;
+/*TODO: insert @nearBindgen without crashing AS compiler */
+export class tMetadata{
+    name: string;
+    symbol: string;
+    decimals: u8;
+    spec: string;
+    icon: string|null;
+    reference: string|null;
+    reference_hash: string|null;
 }
 
-class tMetadata implements IMetadata{
-    _name: string;
-    _symbol: string;
-    _decimals: u8;
-    _spec: string;
-    _icon: string|null;
-    _reference: string|null;
-    _reference_hash: string|null;
-}
-
-export type Metadata = tMetadata;
+export type FungibleTokenMetadata = tMetadata;

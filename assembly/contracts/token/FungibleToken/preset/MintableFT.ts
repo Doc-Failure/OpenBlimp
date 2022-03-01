@@ -1,8 +1,8 @@
-import { FungibleToken } from "../FungibleToken/preset/FungibleToken";
+import { FungibleToken } from "./FungibleToken";
 import { u128 } from "near-sdk-as";
 
 /* Class for test purpose only */
-export class FungibleTokenMock extends FungibleToken {
+export class MintableFT extends FungibleToken {
 
     constructor( name: string, symbol: string, decimals: u8, initialAccount: string, initialSupply: u128){
         super(name, symbol, decimals)

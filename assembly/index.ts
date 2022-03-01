@@ -1,3 +1,2 @@
-export { FungibleToken } from "./contracts/token/FungibleToken";
-import * as token from "./contracts/test";
-export {token};
+export {ft_initialize, ft_transfer, ft_transfer_call, ft_on_transfer, ft_resolve_transfer, ft_total_supply, ft_balance_of, ft_metadata} from "./contracts/token/FungibleToken";
+export { FungibleTokenMetadata } from "./contracts/token/FungibleToken/utils"
