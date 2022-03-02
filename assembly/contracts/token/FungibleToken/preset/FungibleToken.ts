@@ -6,7 +6,7 @@ import { INEP148 } from "../Interfaces/INEP148";
 import { FungibleTokenMetadata } from "../utils";
 
 @nearBindgen
-export abstract class FungibleToken extends Context implements INEP141, INEP148{
+export class FungibleToken extends Context implements INEP141, INEP148{
     private _balances:PersistentMap<string, Balance>  = new PersistentMap<string, Balance>("balancesMap"); 
 
     //TODO - DOES IT WORK???
@@ -18,13 +18,10 @@ export abstract class FungibleToken extends Context implements INEP141, INEP148{
     metadata: FungibleTokenMetadata;
 
     //, icon: string|null, reference: string|null, reference_hash:string|null
-    constructor(name:string, symbol: string, decimals: u8){
+    constructor(name:string, symbol: string, decimals: u8, icon:string, reference:string, reference_hash:string){
         super();
-        this.metadata={ name:name, symbol:symbol, decimals:decimals, spec:"vt1.0.0", icon:"", reference:"", reference_hash:"" }
-    }
-
-    private _saveClass(): void{
-        /* storage.set("metadata", this) */
+        this.metadata={ name:name, symbol:symbol, decimals:decimals, spec:"vt1.0.0", icon:icon, reference:reference, reference_hash:reference_hash }
+        this.total_supply=u128.Zero;
     }
 
     public ft_metadata(): FungibleTokenMetadata {
@@ -114,7 +111,7 @@ export abstract class FungibleToken extends Context implements INEP141, INEP148{
         return false;
     };
 
-    protected ft_mint(account: string, amount: u128): void {
+    public ft_mint(account: string, amount: u128): void {
         assert(account.length != 0, "NEP141: mint to the zero address");
         /*  _beforeTokenTransfer(address(0), account, amount); */
 
@@ -149,7 +146,7 @@ export abstract class FungibleToken extends Context implements INEP141, INEP148{
        /*  _afterTokenTransfer(from, to, amount); */
     }
 
-    protected _burn(account:string, amount: u128): void{
+    public ft_burn(account:string, amount: u128): void{
         assert(account.length > 0, "NEP141: burn from the zero address");
 
        /*  _beforeTokenTransfer(account, address(0), amount); */
