@@ -1,4 +1,4 @@
-import { FungibleTokenMetadata } from "../utils/";
+import { FungibleTokenMetadata } from "../utils";
 
 export interface INEP148{
    /*  protected metadata: Metadata; */

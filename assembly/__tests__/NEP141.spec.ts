@@ -17,9 +17,9 @@ const metadata: FungibleTokenMetadata = {
   symbol: symbol,
   decimals: decimals,
   spec: "vt1.0.0",
-  icon: null,
-  reference: null,
-  reference_hash: null
+  icon: "",
+  reference: "",
+  reference_hash: ""
 }
 const initialSupply = u128.div(u128.Max, new u128(2));
 

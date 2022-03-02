@@ -1,5 +1,4 @@
-import { ContractPromise, ContractPromiseResult, PersistentMap, PromiseStatus, storage } from "near-sdk-as";
-import { u128 } from "near-sdk-as";
+import { ContractPromise, PersistentMap, u128 } from "near-sdk-as";
 import { AccountId, Balance } from "../../../utils/utils";
 import { Context } from "../../../utils/Context";
 import { INEP141 } from "../Interfaces/INEP141";
@@ -21,7 +20,7 @@ export abstract class FungibleToken extends Context implements INEP141, INEP148{
     //, icon: string|null, reference: string|null, reference_hash:string|null
     constructor(name:string, symbol: string, decimals: u8){
         super();
-        this.metadata={ name:name, symbol:symbol, decimals:decimals?decimals:18, spec:"vt1.0.0", icon:null, reference:null, reference_hash:null }
+        this.metadata={ name:name, symbol:symbol, decimals:decimals, spec:"vt1.0.0", icon:"", reference:"", reference_hash:"" }
     }
 
     private _saveClass(): void{
