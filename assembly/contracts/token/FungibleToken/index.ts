@@ -15,21 +15,26 @@ export function ft_initialize_impl(name: string, symbol: string, decimals: u8, i
 export function ft_mint_impl(account: string, amount: u128):void{
     const FT:FungibleToken=storage.getSome<FungibleToken>("FT");
     FT.ft_mint(account,amount);
+    storage.set("FT", FT);
 }
 
 export function ft_burn_impl(account: string, amount: u128):void{
     const FT:FungibleToken=storage.getSome<FungibleToken>("FT");
     FT.ft_burn(account,amount);
+    storage.set("FT", FT);
 }
 
 //CORE NEP-141
-export function ft_transfer_impl(receiver_id: string, amount: string, memo: string | null = null): void {
-    /* oneYocto(); */
-    /* ft_transfer_internal_impl(context.predecessor, receiver_id, amount, memo); */
+export function ft_transfer_impl(receiver_id: string, amount: string, memo: string | null): void {
+    const FT:FungibleToken=storage.getSome<FungibleToken>("FT");
+    FT.ft_transfer(receiver_id, amount, memo);
+    storage.set("FT", FT);
 }
 
-export function ft_transfer_call_impl(receiver_id: string, amount: string, msg: string, memo: string | null = null): void {
-    /* ft_transfer_call_impl(receiver_id, amount, msg, memo); */
+export function ft_transfer_call_impl(receiver_id: string, amount: string, msg: string, memo: string | null): void {
+    const FT:FungibleToken=storage.getSome<FungibleToken>("FT");
+    FT.ft_transfer_call(receiver_id, amount, memo, msg);
+    storage.set("FT", FT);
 }
 
 export function ft_on_transfer_impl(sender_id: string, amount: string, msg: string): string {

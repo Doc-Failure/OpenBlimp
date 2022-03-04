@@ -63,6 +63,7 @@ class NEP141Test{
     
           it('increments ft_total_supply', () => {
             const expectedSupply:u128 = u128.add(initialSupply, amount);
+            //console.log("supply: "+expectedSupply.toString());
             expect<u128>(token.ft_total_supply()).toBe(expectedSupply);
           });
     
