@@ -1,11 +1,13 @@
+import { u128 } from "near-sdk-as";
+
 export class FtStorageBalance{
-    total: string;
-    available: string;
+    total: u128;
+    available: u128;
 }
 
 export class FtStorageBalanceBounds{
-    min: string;
-    max: string;
+    min: u128;
+    max: u128;
 }
 
 @nearBindgen
@@ -19,8 +21,8 @@ export class FtMetadata{
     reference_hash: string;
 }
 
-export type StorageBalance = FtStorageBalance;
-export type StorageBalanceBounds = FtStorageBalanceBounds;
+export type FungibleTokenStorageBalance = FtStorageBalance;
+export type FungibleTokenStorageBalanceBounds = FtStorageBalanceBounds;
 export type FungibleTokenMetadata = FtMetadata;
 
 

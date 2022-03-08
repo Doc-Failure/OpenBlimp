@@ -1,10 +1,9 @@
-import { ft_on_transfer_impl } from "..";
-import {StorageBalanceBounds, StorageBalance} from "../utils";
+import {FungibleTokenStorageBalanceBounds, FungibleTokenStorageBalance} from "../utils";
 
 export interface INEP145{
-    storage_deposit( account_id: string|null, registration_only: boolean|null ): StorageBalance;
-    storage_withdraw(amount: string|null): StorageBalance;
+    storage_deposit( account_id: string|null, registration_only: boolean|null ): FungibleTokenStorageBalance;
+    storage_withdraw(amount: string|null): FungibleTokenStorageBalance;
     storage_unregister(force: boolean|null): boolean;
-    storage_balance_bounds(): StorageBalanceBounds;
-    storage_balance_of(account_id: string): StorageBalance|null;
+    storage_balance_bounds(): FungibleTokenStorageBalanceBounds;
+    storage_balance_of(account_id: string): FungibleTokenStorageBalance|null;
 }

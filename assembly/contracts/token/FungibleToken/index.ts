@@ -25,13 +25,13 @@ export function ft_burn_impl(account: string, amount: u128):void{
 }
 
 //CORE NEP-141
-export function ft_transfer_impl(receiver_id: string, amount: string, memo: string | null): void {
+export function ft_transfer_impl(receiver_id: string, amount: u128, memo: string | null): void {
     const FT:FungibleToken=storage.getSome<FungibleToken>("FT");
     FT.ft_transfer(receiver_id, amount, memo);
     storage.set("FT", FT);
 }
 
-export function ft_transfer_call_impl(receiver_id: string, amount: string, msg: string, memo: string | null): void {
+export function ft_transfer_call_impl(receiver_id: string, amount: u128, msg: string, memo: string | null): void {
     const FT:FungibleToken=storage.getSome<FungibleToken>("FT");
     FT.ft_transfer_call(receiver_id, amount, memo, msg);
     storage.set("FT", FT);

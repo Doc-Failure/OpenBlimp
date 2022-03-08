@@ -9,7 +9,7 @@ import { FungibleTokenMetadata, XCC_GAS, XCC_RESOLVE_GAS } from "../utils";
 @nearBindgen
 export class FTT_CALL {
     sender_id: string;
-    amount: string;
+    amount: u128;
     msg: string;
 }
 
@@ -17,7 +17,7 @@ export class FTT_CALL {
 export class FTT_CALLBACK {
     sender_id: string;
     receiver_id: string;
-    amount: string;
+    amount: u128;
 }
 
 
@@ -59,14 +59,9 @@ export class FungibleToken extends Context implements INEP141, INEP148{
         return res ? res : u128.Zero;
     };
 
-    protected _ft_transfer(sender_id: string, receiver_id: string, amount: string, memo: string|null): bool{
-        const _amount:u128=u128.fromString(amount)
-        this._transfer(sender_id, receiver_id, _amount);
+    public ft_transfer(receiver_id: string, amount: u128, memo: string|null): bool{
+        this._transfer(super._msgSender(), receiver_id, amount);
         return true;
-    };
-
-    public ft_transfer(receiver_id: string, amount: string, memo: string|null): bool{
-        return this._ft_transfer(super._msgSender(),receiver_id, amount, memo);
     };
     
     public allowance(owner:string, spender:string): u128{
@@ -133,53 +128,53 @@ export class FungibleToken extends Context implements INEP141, INEP148{
        /*  _afterTokenTransfer(account, address(0), amount); */
     }
 
-    public ft_on_transfer( sender_id: string, amount: string,  msg: string ): string {
+    //To test
+    public ft_on_transfer( sender_id: string, amount: u128,  msg: string ): string {
         return "false"};
 
-    public ft_resolve_transfer(sender_id: string, receiver_id: string, amount: string): string {
-            const results = ContractPromise.getResults();
-            assert(results.length == 1, "Cross contract chain should be 1");
-            assert(context.predecessor == context.contractName, "Method ft_resolve_transfer is private");
-            assert(!results[0].pending);
-            let unusedAmount = "0";
-            if (results[0].failed) {
-                logging.log("Failed transaction, refund all");
-                unusedAmount = amount;
-            }
-            else {
-                unusedAmount = results[0].decode<string>(); //unused amount provided by on_transfer method
-            }
-        
-            const amountConverted = u128.from(amount);
-            let unusedAmountConverted = u128.from(unusedAmount);
-        
-            if (unusedAmountConverted > u128.Zero) {
-                //check balance of receiver and get min value
-                const receiver_balance = this._balances.get(receiver_id, u128.Zero)!;
-                if (u128.gt(unusedAmountConverted, receiver_balance)) {
-                    unusedAmountConverted = receiver_balance; //can't refund more than total balance
-                }
-                const usedAmount = u128.sub(amountConverted, unusedAmountConverted).toString();
-        
-                if (!this._balances.contains(sender_id)) {
-                    logging.log("Refund not possible, account deleted");
-                    //todo reduce max supply
-                }
-                else {
-                    logging.log("Attached too much tokens, refund");
-                    this._ft_transfer(receiver_id, sender_id, unusedAmountConverted.toString(), null);
-        
-                }
-                return usedAmount;
-            }
-            return amount;
-        }
-        
+    //To test
+    public ft_resolve_transfer(sender_id: string, receiver_id: string, amount: u128): u128 {
+        const results = ContractPromise.getResults();
+        assert(results.length == 1, "Cross contract chain should be 1");
+        assert(context.predecessor == context.contractName, "Method ft_resolve_transfer is private");
+        assert(!results[0].pending);
+        let unusedAmount:u128 = u128.Zero;
+        if (results[0].failed) {
+            logging.log("Failed transaction, refund all");
+            unusedAmount = amount;
+        }else {
+            unusedAmount = results[0].decode<u128>(); //unused amount provided by on_transfer method
+        } 
 
-    //TODO
-    public ft_transfer_call(receiver_id: string, amount: string, memo: string|null, msg: string):ContractPromise{  
+        const amountConverted = u128.from(amount);
+        let unusedAmountConverted = u128.from(unusedAmount);
+    
+        if (unusedAmountConverted > u128.Zero) {
+            //check balance of receiver and get min value
+            const receiver_balance = this._balances.get(receiver_id, u128.Zero)!;
+            if (u128.gt(unusedAmountConverted, receiver_balance)) {
+                unusedAmountConverted = receiver_balance; //can't refund more than total balance
+            }
+            const usedAmount = u128.sub(amountConverted, unusedAmountConverted);
+    
+            if (!this._balances.contains(sender_id)) {
+                logging.log("Refund not possible, account deleted");
+                //todo reduce max supply
+            }else {
+                logging.log("Attached too much tokens, refund");
+                this._transfer(receiver_id, sender_id, unusedAmountConverted);
+    
+            }
+            return usedAmount;
+        }
+        return amount;
+    }
+        
+    //To test
+    public ft_transfer_call(receiver_id: string, amount: u128, memo: string|null, msg: string):ContractPromise{  
         const sender_id = super._msgSender();
-        this._ft_transfer( sender_id, receiver_id, amount, memo);
+        //To define how to use memo inside _transfer
+        this._transfer( sender_id, receiver_id, amount);
     
         ContractPromise
             .create<FTT_CALL>( receiver_id, "ft_on_transfer", { sender_id, amount, msg }, XCC_GAS )
@@ -187,6 +182,5 @@ export class FungibleToken extends Context implements INEP141, INEP148{
             .returnAsResult();
         return new ContractPromise()
     }
-
 
 }

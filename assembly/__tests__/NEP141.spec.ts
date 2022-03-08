@@ -184,7 +184,7 @@ class NEP141Test{
       });
       throws('reverts', () =>{
         const amountToSend:u128=new u128(100);
-        token.ft_transfer(recipient, amountToSend.toString(), "");
+        token.ft_transfer(recipient, amountToSend, "");
       }, "Transfer amount exceeds balance");
     });
 
@@ -194,7 +194,7 @@ class NEP141Test{
         token = new FungibleTokenMock(name, symbol, 10,initialHolder, initialSupply);
       });
       it('transfers the requested amount', ()=>{
-        token.ft_transfer(recipient, initialSupply.toString(), null);
+        token.ft_transfer(recipient, initialSupply, null);
         expect(token.ft_balance_of(initialHolder)).toBe(u128.Zero);
         expect(token.ft_balance_of(recipient)).toBe(initialSupply);
       });
@@ -206,7 +206,7 @@ class NEP141Test{
         token = new FungibleTokenMock(name, symbol, decimals,initialHolder, initialSupply);
       });
       it('transfers the requested amount', ()=> {
-       token.ft_transfer(recipient, u128.Zero.toString(), "");
+       token.ft_transfer(recipient, u128.Zero, "");
        expect(token.ft_balance_of(initialHolder)).toBe(initialSupply);
        expect(token.ft_balance_of(recipient)).toBe(u128.Zero);
       });
@@ -219,7 +219,7 @@ class NEP141Test{
       });
       throws('throws', () =>{
         const amountToSend:u128=new u128(100);
-        token.ft_transfer("", amountToSend.toString(), "");
+        token.ft_transfer("", amountToSend, "");
       }, "Transfer to the zero address");
     });
   });
