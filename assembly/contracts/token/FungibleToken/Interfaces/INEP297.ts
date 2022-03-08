@@ -8,5 +8,5 @@ export interface INEP297{
     standard: string,
     version: string,
     event: string,
-    data?: unknown,
+    data: string|null,
 }

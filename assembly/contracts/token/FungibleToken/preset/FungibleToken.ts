@@ -1,9 +1,8 @@
 import { ContractPromise, PersistentMap, u128, context, logging} from "near-sdk-as";
 import { Balance } from "../../../utils/utils";
 import { Context } from "../../../utils/Context";
-import { INEP141 } from "../Interfaces/INEP141";
-import { INEP148 } from "../Interfaces/INEP148";
-import { FungibleTokenMetadata, XCC_GAS, XCC_RESOLVE_GAS } from "../utils";
+import { INEP141, INEP145, INEP148 } from "../Interfaces";
+import { FungibleTokenMetadata, XCC_GAS, XCC_RESOLVE_GAS, FungibleTokenStorageBalance, FungibleTokenStorageBalanceBounds } from "../utils";
 
 // TODO
 @nearBindgen
@@ -22,7 +21,7 @@ export class FTT_CALLBACK {
 
 
 @nearBindgen
-export class FungibleToken extends Context implements INEP141, INEP148{
+export class FungibleToken extends Context implements INEP141, /* INEP145,  */INEP148{
   private _balances:PersistentMap<string, Balance>  = new PersistentMap<string, Balance>("balancesMap"); 
 
   // TODO - DOES IT WORK???
@@ -183,4 +182,63 @@ export class FungibleToken extends Context implements INEP141, INEP148{
     return new ContractPromise();
   }
 
+
+
+
+  //INEP145 STORE BLAH BLAH BLAH
+/* 
+
+  public storage_deposit_impl(account_id: string = context.predecessor, registration_only: boolean = true): FungibleTokenStorageBalance {
+  oneYocto();
+
+  const storange_bound = storage_balance_bounds_impl();
+  const min_bound = u128.from(storange_bound);
+
+  assert(context.attachedDeposit >= min_bound, "Deposit too low to pay registration fee");
+
+  const balance = storage_balance_of_impl(account_id);
+  if (u128.from(balance.total) > u128.Zero) {
+      logging.log("The account is already registered, refunding the deposit");
+      sendNear(context.predecessor, context.attachedDeposit);
+      return balance;
+  }
+  balance.total = min_bound.toString();
+  balance.available = "0";
+  storageRegistry.set(account_id, balance);
+
+  if (context.attachedDeposit > min_bound) {
+      sendNear(context.predecessor, u128.sub(context.attachedDeposit, min_bound));
+  }
+
+  return balance;
+}
+
+public storage_withdraw_impl(amount: string | null): FungibleTokenStorageBalance {
+  oneYocto();
+  assert(storageRegistry.contains(context.predecessor), "The account " + context.predecessor + " is not registered");
+  assert(amount == null || u128.from(amount) == u128.Zero, "The amount is greater than the available storage balance");
+  return storage_balance_of_impl(context.predecessor);
+}
+
+public storage_unregister_impl(force: boolean = false): boolean {
+  oneYocto();
+  if (force) {
+      tokenRegistry.delete(context.predecessor);
+      storageRegistry.delete(context.predecessor);
+      return true;
+  } else {
+      throw "This method can only be called with force = true. Warning: All tokens will be burned and are lost.";
+  }
+}
+
+
+public storage_balance_bounds_impl(): FungibleTokenStorageBalanceBounds {
+  const storage_cost = get_account_storage_cost();
+  return new FungibleTokenStorageBalanceBounds(storage_cost, storage_cost);
+}
+
+
+public storage_balance_of_impl(account_id: string): FungibleTokenStorageBalance {
+  return storageRegistry.get(account_id, new StorageBalance("0", get_account_storage_cost()))!;
+} */
 }

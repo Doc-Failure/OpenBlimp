@@ -9,7 +9,7 @@
 
 "@as-covers/core@0.2.1":
   version "0.2.1"
-  resolved "https://registry.npmjs.org/@as-covers/core/-/core-0.2.1.tgz"
+  resolved "https://registry.yarnpkg.com/@as-covers/core/-/core-0.2.1.tgz#362a4719a1901d416941f5425b63fa46288ce8e6"
   integrity sha512-/GGTzPB850shvL6ZiidKDmIXSpBflYfzhYyipe7HA1eijBQKKluaLSRy/JLSN53f6kp3tLrCevPXN6HA2fyuBw==
   dependencies:
     "@as-covers/assembly" "^0.2.0"
@@ -26,7 +26,7 @@
 
 "@as-covers/transform@^0.2.1":
   version "0.2.1"
-  resolved "https://registry.npmjs.org/@as-covers/transform/-/transform-0.2.1.tgz"
+  resolved "https://registry.yarnpkg.com/@as-covers/transform/-/transform-0.2.1.tgz#ea3cb56371493ba77b5761766d3ef46aba36d7c0"
   integrity sha512-FutGj2yMIT2GOfqXrbnqSpeZ0eB5Bsnsg+BLnmqpEszthFhe/5/hKYmfNsiF2QBYZnqcIQ7dHw/z31+PlyUDug==
   dependencies:
     line-column "^1.0.2"
@@ -198,7 +198,7 @@
   resolved "https://registry.yarnpkg.com/@types/json-schema/-/json-schema-7.0.9.tgz#97edc9037ea0c38585320b28964dde3b39e4660d"
   integrity sha512-qcUXuemtEu+E5wZSJHNxUXeCZhAfXKQ41D+duX+VYPde7xyEVZci+/oXKJL13tnRs9lR2pr4fod59GT6/X1/yQ==
 
-"@typescript-eslint/eslint-plugin@^8.10.0":
+"@typescript-eslint/eslint-plugin@^5.14.0":
   version "5.14.0"
   resolved "https://registry.yarnpkg.com/@typescript-eslint/eslint-plugin/-/eslint-plugin-5.14.0.tgz#5119b67152356231a0e24b998035288a9cd21335"
   integrity sha512-ir0wYI4FfFUDfLcuwKzIH7sMVA+db7WYen47iRSaCGl+HMAZI9fpBwfDo45ZALD3A45ZGyHWDNLhbg8tZrMX4w==
@@ -213,7 +213,7 @@
     semver "^7.3.5"
     tsutils "^3.21.0"
 
-"@typescript-eslint/parser@^8.10.0":
+"@typescript-eslint/parser@^5.14.0":
   version "5.14.0"
   resolved "https://registry.yarnpkg.com/@typescript-eslint/parser/-/parser-5.14.0.tgz#7c79f898aa3cff0ceee6f1d34eeed0f034fb9ef3"
   integrity sha512-aHJN8/FuIy1Zvqk4U/gcO/fxeMKyoSv/rS46UXMXOJKVsLQ+iYPuXNbpbH7cBLcpSbmyyFbwrniLx5+kutu1pw==

@@ -22,11 +22,11 @@
     "rabin-wasm": "^0.1.5"
   },
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.14.0",
+    "@typescript-eslint/parser": "^5.14.0",
     "assemblyscript": "^0.19.22",
-    "near-sdk-as": "3.1.0",
     "eslint": "^8.10.0",
-    "@typescript-eslint/eslint-plugin": "^8.10.0",
-    "@typescript-eslint/parser": "^8.10.0",
+    "near-sdk-as": "3.1.0",
     "prettier": "2.5.1",
     "typescript": "^4.1.5"
   },
