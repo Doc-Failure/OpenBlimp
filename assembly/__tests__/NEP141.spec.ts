@@ -1,6 +1,6 @@
 import { u128 , VMContext } from "near-sdk-as";
 import { FungibleTokenMock } from "../contracts/token/mocks/FungibleTokenMock";
-import { FungibleTokenMetadata } from "../contracts/token/FungibleToken/utils"
+import { FungibleTokenMetadata } from "../contracts/token/FungibleToken/utils";
 
 let token: FungibleTokenMock;
 
@@ -20,7 +20,7 @@ const metadata: FungibleTokenMetadata = {
   icon: "",
   reference: "",
   reference_hash: ""
-}
+};
 const initialSupply = u128.div(u128.Max, new u128(2));
 
 let amount : u128 = new u128(50);
@@ -30,17 +30,17 @@ class NEP141Test{
       it('has metadata',() => {
         token = new FungibleTokenMock(name, symbol, decimals, initialHolder, initialSupply);
         expect<FungibleTokenMetadata>(token.ft_metadata()).toStrictEqual(metadata, "Metadata Test Broken");
-      })  
+      });  
       it('has 24 decimals',() => {
         token = new FungibleTokenMock(name, symbol, 24, initialHolder, initialSupply);
         expect<u8>(token.ft_metadata().decimals).toBe(24);
       });
-        describe('set decimals', () => {
+      describe('set decimals', () => {
         const decimals:u8 = u8.MAX_VALUE;
         it('can set decimals during construction', () => {
           const tokenDec = new FungibleTokenMock(name, symbol, decimals, initialHolder, initialSupply);
           expect<u8>(tokenDec.ft_metadata().decimals).toBe(decimals);
-       });
+        });
       });
     });
 
@@ -52,18 +52,18 @@ class NEP141Test{
       it('_mint',() => {
         it('rejects a null account', () => { 
           throws('Mint to the zero address', () =>{
-            token.mint("", amount )
-          })
+            token.mint("", amount );
+          });
         });
     
-      describe('for a non zero account', () => {
+        describe('for a non zero account', () => {
           beforeEach(() => {
             token.mint(recipient, amount);
           });
     
           it('increments ft_total_supply', () => {
             const expectedSupply:u128 = u128.add(initialSupply, amount);
-            //console.log("supply: "+expectedSupply.toString());
+            // console.log("supply: "+expectedSupply.toString());
             expect<u128>(token.ft_total_supply()).toBe(expectedSupply);
           });
     
@@ -85,15 +85,15 @@ class NEP141Test{
 
       describe('_burn', () => {
         it('rejects a null account', () => {
-          throws("NEP141: burn from the zero address", ()=>{ token.burn("", new u128(1))});
+          throws("NEP141: burn from the zero address", ()=>{ token.burn("", new u128(1));});
         });
 
 
         describe('for a non zero account', () => {
           it('rejects burning more than balance', () => {
-            throws('NEP141: burn amount exceeds balance' , () => { token.burn(initialHolder, u128.add(initialSupply, new u128(1))) });
+            throws('NEP141: burn amount exceeds balance' , () => { token.burn(initialHolder, u128.add(initialSupply, new u128(1))); });
           });
-        })
+        });
 
         describe('for entire balance', ()=> {
           beforeEach(() => {
@@ -146,7 +146,7 @@ class NEP141Test{
           }); */
         });
       });
-    }) 
+    }); 
   }
 
   shouldBehaveLikeNEP141():void {
@@ -171,60 +171,60 @@ class NEP141Test{
           });
         });
       });
-    })
+    });
   }
 
 
- shouldBehaveLikeNEP141Transfer():void {
-  describe('when the recipient is not the zero address', ()=> {
-    describe('when the sender does not have enough balance', ()=> {
-      beforeEach(() => {
-        VMContext.setSigner_account_id(anotherAccount);
-        token = new FungibleTokenMock(name, symbol, decimals,initialHolder, initialSupply);
+  shouldBehaveLikeNEP141Transfer():void {
+    describe('when the recipient is not the zero address', ()=> {
+      describe('when the sender does not have enough balance', ()=> {
+        beforeEach(() => {
+          VMContext.setSigner_account_id(anotherAccount);
+          token = new FungibleTokenMock(name, symbol, decimals,initialHolder, initialSupply);
+        });
+        throws('reverts', () =>{
+          const amountToSend:u128=new u128(100);
+          token.ft_transfer(recipient, amountToSend, "");
+        }, "Transfer amount exceeds balance");
       });
-      throws('reverts', () =>{
-        const amountToSend:u128=new u128(100);
-        token.ft_transfer(recipient, amountToSend, "");
-      }, "Transfer amount exceeds balance");
+
+      describe('when the sender transfers all balance', ()=> {
+        beforeEach(() => {
+          VMContext.setSigner_account_id(initialHolder);
+          token = new FungibleTokenMock(name, symbol, 10,initialHolder, initialSupply);
+        });
+        it('transfers the requested amount', ()=>{
+          token.ft_transfer(recipient, initialSupply, null);
+          expect(token.ft_balance_of(initialHolder)).toBe(u128.Zero);
+          expect(token.ft_balance_of(recipient)).toBe(initialSupply);
+        });
+      });
+
+      describe('when the sender transfers zero tokens', function () {
+        beforeEach(() => {
+          VMContext.setSigner_account_id(initialHolder);
+          token = new FungibleTokenMock(name, symbol, decimals,initialHolder, initialSupply);
+        });
+        it('transfers the requested amount', ()=> {
+          token.ft_transfer(recipient, u128.Zero, "");
+          expect(token.ft_balance_of(initialHolder)).toBe(initialSupply);
+          expect(token.ft_balance_of(recipient)).toBe(u128.Zero);
+        });
+      });
+
+      describe('when the recipient is the zero address', ()=> {
+        beforeEach(() => {
+          VMContext.setSigner_account_id(initialHolder);
+          token = new FungibleTokenMock(name, symbol, 10,initialHolder, initialSupply);
+        });
+        throws('throws', () =>{
+          const amountToSend:u128=new u128(100);
+          token.ft_transfer("", amountToSend, "");
+        }, "Transfer to the zero address");
+      });
     });
 
-    describe('when the sender transfers all balance', ()=> {
-      beforeEach(() => {
-        VMContext.setSigner_account_id(initialHolder);
-        token = new FungibleTokenMock(name, symbol, 10,initialHolder, initialSupply);
-      });
-      it('transfers the requested amount', ()=>{
-        token.ft_transfer(recipient, initialSupply, null);
-        expect(token.ft_balance_of(initialHolder)).toBe(u128.Zero);
-        expect(token.ft_balance_of(recipient)).toBe(initialSupply);
-      });
-    })
-
-    describe('when the sender transfers zero tokens', function () {
-      beforeEach(() => {
-        VMContext.setSigner_account_id(initialHolder);
-        token = new FungibleTokenMock(name, symbol, decimals,initialHolder, initialSupply);
-      });
-      it('transfers the requested amount', ()=> {
-       token.ft_transfer(recipient, u128.Zero, "");
-       expect(token.ft_balance_of(initialHolder)).toBe(initialSupply);
-       expect(token.ft_balance_of(recipient)).toBe(u128.Zero);
-      });
-    });
-
-    describe('when the recipient is the zero address', ()=> {
-      beforeEach(() => {
-        VMContext.setSigner_account_id(initialHolder);
-        token = new FungibleTokenMock(name, symbol, 10,initialHolder, initialSupply);
-      });
-      throws('throws', () =>{
-        const amountToSend:u128=new u128(100);
-        token.ft_transfer("", amountToSend, "");
-      }, "Transfer to the zero address");
-    });
-  });
-
-}}
+  }}
 
 
 let res:NEP141Test=new NEP141Test;

@@ -12,5 +12,5 @@ export interface INEP141 {
 
     ft_on_transfer( sender_id: string, amount: u128,  msg: string ): string;
 
-    //Allowance-approve-transferFrom???
+    // Allowance-approve-transferFrom???
 }

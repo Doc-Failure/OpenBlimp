@@ -8,6 +8,7 @@
   "author": "<stefano.convertino@gmail.com>",
   "license": "MIT",
   "private": false,
+  "lint": "eslint --max-warnings 0 --ext ts \"*/assembly/**/*.ts\"",
   "files": [
     "assembly/",
     "build/",
@@ -22,13 +23,36 @@
   },
   "devDependencies": {
     "assemblyscript": "^0.19.22",
-    "near-sdk-as": "3.1.0"
+    "near-sdk-as": "3.1.0",
+    "eslint": "^8.10.0",
+    "@typescript-eslint/eslint-plugin": "^8.10.0",
+    "@typescript-eslint/parser": "^8.10.0",
+    "prettier": "2.5.1",
+    "typescript": "^4.1.5"
   },
   "scripts": {
     "build": "yarn build:release",
     "build:debug": "npx asc assembly/index.ts -b build/debug/openblimp.wasm -t build/debug/openblimp.wat --debug --sourceMap --runtime stub",
     "build:release": "npx asc assembly/index.ts -b build/release/openblimp.wasm -t build/release/openblimp.wat -O3 --sourceMap --runtime stub",
     "test": "asp --verbose",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "prettify": "prettier --write \"./assembly/**/*.ts\"",
+    "lint": "eslint --max-warnings 0 --ext ts \"./assembly/**/*.ts\"",
+    "check:pretty": "prettier --check \"**/assembly/**/*.ts\"",
+    "check:all": "yarn lint && yarn check:pretty",
+    "fix:all": "yarn lint --fix && yarn prettify"
+  },
+  "lint-staged": {
+    "*/assembly/**/*.ts": [
+      "eslint --ext ts --fix",
+      "eslint --max-warnings 0 --ext ts"
+    ],
+    "**/src/**/*.ts": [
+      "prettier --write",
+      "prettier --check"
+    ]
+  },
+  "engines": {
+    "node": ">=12.0.0"
   }
 }
