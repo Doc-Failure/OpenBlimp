@@ -1,7 +1,8 @@
 import { FungibleTokenMetadata } from "./utils";
 /* import { MintableFT } from "./preset/MintableFT"; */
 import { FungibleToken } from "./preset/FungibleToken";
-import { storage, u128 } from "near-sdk-as";
+import { storage, u128, context } from "near-sdk-as";
+import {FungibleTokenStorageBalanceBounds, FungibleTokenStorageBalance} from "./utils";
 
 // initialAccount:AccountId ,initialSupply: u128
 
@@ -9,7 +10,11 @@ import { storage, u128 } from "near-sdk-as";
 export function ft_initialize_impl(name: string, symbol: string, decimals: u8, icon:string, reference:string, reference_hash:string): void {
   const FT:FungibleToken= new FungibleToken(name, symbol, decimals, icon, reference, reference_hash);
   storage.set("FT", FT);
+
+  const initial_storage_usage = context.storageUsage;
+  storage.set("account_storage_usage", context.storageUsage - initial_storage_usage);
 }
+
 
 export function ft_mint_impl(account: string, amount: u128):void{
   const FT:FungibleToken=storage.getSome<FungibleToken>("FT");
@@ -60,4 +65,36 @@ export function ft_balance_of_impl(account_id: string): u128 {
 export function ft_metadata_impl(): FungibleTokenMetadata {
   const FT:FungibleToken=storage.getSome<FungibleToken>("FT");
   return FT.ft_metadata();
+}
+
+export function storage_deposit_impl( account_id: string, registration_only: boolean ): FungibleTokenStorageBalance{
+  const FT:FungibleToken=storage.getSome<FungibleToken>("FT");
+  const res:FungibleTokenStorageBalance=FT.storage_deposit(account_id, registration_only);
+  storage.set("FT", FT);
+  return res;
+}
+
+export function storage_withdraw_impl(amount: string|null): FungibleTokenStorageBalance{
+  const FT:FungibleToken=storage.getSome<FungibleToken>("FT");
+  const res:FungibleTokenStorageBalance=FT.storage_withdraw(amount);
+  storage.set("FT", FT);
+  return res;
+
+}
+
+export function storage_unregister_impl(force: boolean): boolean{
+  const FT:FungibleToken=storage.getSome<FungibleToken>("FT");
+  const res:boolean=FT.storage_unregister(force);
+  storage.set("FT", FT);
+  return res;
+}
+
+export function storage_balance_bounds_impl(): FungibleTokenStorageBalanceBounds{
+  const FT:FungibleToken=storage.getSome<FungibleToken>("FT");
+  return FT.storage_balance_bounds();
+}
+
+export function storage_balance_of_impl(account_id: string): FungibleTokenStorageBalance{
+  const FT:FungibleToken=storage.getSome<FungibleToken>("FT");
+  return FT.storage_balance_of(account_id);
 }

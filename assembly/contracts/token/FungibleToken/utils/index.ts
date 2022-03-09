@@ -4,12 +4,21 @@ import { u128 } from "near-sdk-as";
 export class FungibleTokenStorageBalance{
   total: u128;
   available: u128;
+
+  constructor(total:u128, available:u128){
+    this.total=total;
+    this.available=available;
+  }
 }
 
 @nearBindgen
 export class FungibleTokenStorageBalanceBounds{
   min: u128;
   max: u128;
+  constructor(min:u128, max:u128){
+    this.min=min;
+    this.max=max;
+  }
 }
 
 @nearBindgen
