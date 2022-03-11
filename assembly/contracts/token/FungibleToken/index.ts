@@ -11,8 +11,9 @@ export function ft_initialize_impl(name: string, symbol: string, decimals: u8, i
   const FT:FungibleToken= new FungibleToken(name, symbol, decimals, icon, reference, reference_hash);
   storage.set("FT", FT);
 
-  const initial_storage_usage = context.storageUsage;
-  storage.set("account_storage_usage", context.storageUsage - initial_storage_usage);
+  const initial_storage_usage:u128 =  u128.from(context.storageUsage);
+  // context.storageUsage - initial_storage_usage
+  storage.set("account_storage_usage", u128.Zero);
 }
 
 
@@ -29,13 +30,13 @@ export function ft_burn_impl(account: string, amount: u128):void{
 }
 
 // CORE NEP-141
-export function ft_transfer_impl(receiver_id: string, amount: u128, memo: string | null): void {
+export function ft_transfer_impl(receiver_id: string, amount: u128, memo: string): void {
   const FT:FungibleToken=storage.getSome<FungibleToken>("FT");
   FT.ft_transfer(receiver_id, amount, memo);
   storage.set("FT", FT);
 }
 
-export function ft_transfer_call_impl(receiver_id: string, amount: u128, msg: string, memo: string | null): void {
+export function ft_transfer_call_impl(receiver_id: string, amount: u128, msg: string, memo: string): void {
   const FT:FungibleToken=storage.getSome<FungibleToken>("FT");
   FT.ft_transfer_call(receiver_id, amount, memo, msg);
   storage.set("FT", FT);
