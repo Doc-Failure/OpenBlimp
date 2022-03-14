@@ -1,6 +1,20 @@
 import { u128 } from "near-sdk-as";
 
 @nearBindgen
+export class FTT_CALL {
+  sender_id: string;
+  amount: u128;
+  msg: string;
+}
+
+@nearBindgen
+export class FTT_CALLBACK {
+  sender_id: string;
+  receiver_id: string;
+  amount: u128;
+}
+
+@nearBindgen
 export class FungibleTokenStorageBalance{
   total: u128;
   available: u128;

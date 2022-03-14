@@ -2,23 +2,7 @@ import { ContractPromise, ContractPromiseBatch, PersistentMap, u128, context, lo
 import { Balance } from "../../../utils/utils";
 import { Context } from "../../../utils/Context";
 import { INEP141, INEP145, INEP148 } from "../Interfaces";
-import { FungibleTokenMetadata, XCC_GAS, XCC_RESOLVE_GAS, FungibleTokenStorageBalance, FungibleTokenStorageBalanceBounds } from "../utils";
-
-// TODO
-@nearBindgen
-export class FTT_CALL {
-  sender_id: string;
-  amount: u128;
-  msg: string;
-}
-
-@nearBindgen
-export class FTT_CALLBACK {
-  sender_id: string;
-  receiver_id: string;
-  amount: u128;
-}
-
+import { FungibleTokenMetadata, XCC_GAS, XCC_RESOLVE_GAS, FungibleTokenStorageBalance, FungibleTokenStorageBalanceBounds, FTT_CALL, FTT_CALLBACK } from "../utils";
 
 @nearBindgen
 export class FungibleToken extends Context implements INEP141, INEP145, INEP148{
@@ -55,11 +39,6 @@ export class FungibleToken extends Context implements INEP141, INEP145, INEP148{
     return res;
   }
 
-  private balanceOf(account: string): u128{
-    const res : u128 | null = this._balances.get(account);
-    return res ? res : u128.Zero;
-  }
-
   public ft_transfer(receiver_id: string, amount: u128, memo: string|null): bool{
     this._transfer(super._msgSender(), receiver_id, amount);
     return true;
@@ -69,14 +48,6 @@ export class FungibleToken extends Context implements INEP141, INEP145, INEP148{
     return u128.Zero;
   }
 
-  public approve(spender:string , amount: u128): bool{
-    return false;
-  }
-
-  public transferFrom( from:string, to:string, amount:u128 ): bool{
-    return false;
-  }
-
   public ft_mint(account: string, amount: u128): void {
     assert(account.length != 0, "NEP141: mint to the zero address");
     /*  _beforeTokenTransfer(address(0), account, amount); */
@@ -84,7 +55,7 @@ export class FungibleToken extends Context implements INEP141, INEP145, INEP148{
     const res : u128 = u128.add(this.total_supply, amount);
     this.total_supply=res;
         
-    this._balances.set(account, u128.add(this.balanceOf(account), amount));
+    this._balances.set(account, u128.add(this.ft_balance_of(account), amount));
     /* emit Transfer(address(0), account, amount); */
     /*  _afterTokenTransfer(address(0), account, amount); */
   }
