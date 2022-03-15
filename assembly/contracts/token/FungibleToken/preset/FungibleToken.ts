@@ -1,28 +1,40 @@
-import { ContractPromise, ContractPromiseBatch, PersistentMap, u128, context, logging, storage} from "near-sdk-as";
-import { Balance } from "../../../utils/utils";
+import { ContractPromise, ContractPromiseBatch, PersistentMap, u128, context, logging} from "near-sdk-as";
+import { AccountId, Balance } from "../../../utils/utils";
 import { Context } from "../../../utils/Context";
 import { INEP141, INEP145, INEP148 } from "../Interfaces";
 import { FungibleTokenMetadata, XCC_GAS, XCC_RESOLVE_GAS, FungibleTokenStorageBalance, FungibleTokenStorageBalanceBounds, FTT_CALL, FTT_CALLBACK } from "../utils";
 
 @nearBindgen
 export class FungibleToken extends Context implements INEP141, INEP145, INEP148{
-  private _balances:PersistentMap<string, Balance>  = new PersistentMap<string, Balance>("balancesMap"); 
+  private _balances:PersistentMap<AccountId, Balance>  = new PersistentMap<AccountId, Balance>("b"); 
 
-  // TODO - DOES IT WORK???
-  private _allowances:PersistentMap<string, PersistentMap<string, u128>>  = new PersistentMap<string, PersistentMap<string, u128>> ("allowancesMap"); 
-
-
-  private _storageRegistry:PersistentMap<string, FungibleTokenStorageBalance> = new PersistentMap<string, FungibleTokenStorageBalance>('s');
-  /* public accounts:PersistentMap<AccountId, Balance> = new PersistentMap<string, u128>("accountMap"); */
+  private _storageRegistry:PersistentMap<AccountId, FungibleTokenStorageBalance> = new PersistentMap<AccountId, FungibleTokenStorageBalance>('s');
+  
   private total_supply:u128;
-  private owner_id:string;
+  private owner_id:AccountId;
   private metadata: FungibleTokenMetadata;
+  private storageBalanceBounds: FungibleTokenStorageBalanceBounds;
 
-  // , icon: string|null, reference: string|null, reference_hash:string|null
-  constructor(name:string, symbol: string, decimals: u8, icon:string, reference:string, reference_hash:string){
+  constructor(name:string, symbol: string, decimals: u8, icon:string="", reference:string="", reference_hash:string=""){
     super();
     this.metadata={ name:name, symbol:symbol, decimals:decimals, spec:"vt1.0.0", icon:icon, reference:reference, reference_hash:reference_hash };
     this.total_supply=u128.Zero;
+    const account_storage_usage:u128=this._measure_account_storage_usage();
+    this.storageBalanceBounds= new FungibleTokenStorageBalanceBounds(account_storage_usage, account_storage_usage);
+  }
+
+  // copied as is from rust library, didn't understant how it works
+  private _measure_account_storage_usage(): u128 {
+    const initial_storage_usage:u64 = context.storageUsage;
+    this._balances.set("a".repeat(64), u128.Max);
+    const res:u128 = u128.from(context.storageUsage - initial_storage_usage);
+    this._balances.delete("a".repeat(64));
+    return res;
+  }
+
+  // this function should be implemented on the receiver side
+  ft_on_transfer(sender_id: AccountId, amount: u128, msg: string): string {
+    throw new Error("Method not implemented.");
   }
 
   public ft_metadata(): FungibleTokenMetadata {
@@ -33,79 +45,58 @@ export class FungibleToken extends Context implements INEP141, INEP145, INEP148{
     return this.total_supply;
   }
 
-  public ft_balance_of(account: string): u128{
+  public ft_balance_of(account: AccountId): u128{
     const balance : u128 | null = this._balances.get(account);
     const res:u128 = balance ? balance : u128.Zero;
     return res;
   }
 
-  public ft_transfer(receiver_id: string, amount: u128, memo: string|null): bool{
+  public ft_transfer(receiver_id: AccountId, amount: u128, memo: string|null): bool{
     this._transfer(super._msgSender(), receiver_id, amount);
     return true;
   }
     
-  public allowance(owner:string, spender:string): u128{
+  public allowance(owner:AccountId, spender:AccountId): u128{
     return u128.Zero;
   }
 
-  public ft_mint(account: string, amount: u128): void {
+  public ft_mint(account: AccountId, amount: u128): void {
     assert(account.length != 0, "NEP141: mint to the zero address");
-    /*  _beforeTokenTransfer(address(0), account, amount); */
-
     const res : u128 = u128.add(this.total_supply, amount);
     this.total_supply=res;
-        
     this._balances.set(account, u128.add(this.ft_balance_of(account), amount));
-    /* emit Transfer(address(0), account, amount); */
-    /*  _afterTokenTransfer(address(0), account, amount); */
   }
 
-  private _transfer(from: string, to:string, amount: u128): void{
-    assert(from != null, "NEP141: transfer from the zero address");
+  protected _transfer(from: AccountId, to:AccountId, amount: u128): void{
+    logging.log("From: "+from+" - to: "+to+" - amount: "+amount.toString());
+    oneYocto();
+    assert(from.length > 0, "NEP141: transfer from the zero address");
     assert(to.length > 0, "NEP141: transfer to the zero address");
+    const fromOldBalance:u128|null=this._balances.get(from);
+    const fromBalance: u128 = fromOldBalance ? fromOldBalance : u128.Zero;
 
-    /*  _beforeTokenTransfer(from, to, amount); */
-    const fromOldNalance:u128|null=this._balances.get(from);
-    const fromBalance: u128 = fromOldNalance ? fromOldNalance : u128.Zero;
-
+    logging.log("From fromBalance: "+fromBalance.toString());
     assert(fromBalance >= amount, "NEP141: transfer amount exceeds balance");
-
     const newFromBalance:u128= u128.sub(fromBalance, amount);
     this._balances.set(from, newFromBalance);
-
     const toOldBalance:u128|null=this._balances.get(to);
     const toBalance:u128=toOldBalance?toOldBalance:u128.Zero;
-
     const newToBalance:u128=u128.add(toBalance,amount);
     this._balances.set(to, newToBalance);
-
-    /*  emit Transfer(from, to, amount); */
-    /*  _afterTokenTransfer(from, to, amount); */
   }
 
-  public ft_burn(account:string, amount: u128): void{
+  public ft_burn(account:AccountId, amount: u128): void{
     assert(account.length > 0, "NEP141: burn from the zero address");
-
-    /*  _beforeTokenTransfer(account, address(0), amount); */
-
     const oldAccountBalance: u128 | null = this._balances.get(account);
     const accountBalance: u128 = oldAccountBalance?oldAccountBalance:u128.Zero;
 
     assert(accountBalance >= amount, "NEP141: burn amount exceeds balance");
-
     this._balances.set(account, u128.sub(accountBalance, amount));
     this.total_supply=u128.sub(this.total_supply, amount);
-
-    /*  emit Transfer(account, address(0), amount); */
-    /*  _afterTokenTransfer(account, address(0), amount); */
   }
 
   // To test
-  public ft_on_transfer( sender_id: string, amount: u128,  msg: string ): string {
-    return "false";}
-
-  // To test
-  public ft_resolve_transfer(sender_id: string, receiver_id: string, amount: u128): u128 {
+  public ft_resolve_transfer(sender_id: AccountId, receiver_id: AccountId, amount: u128): u128 {
     const results = ContractPromise.getResults();
     assert(results.length == 1, "Cross contract chain should be 1");
     assert(context.predecessor == context.contractName, "Method ft_resolve_transfer is private");
@@ -143,7 +134,7 @@ export class FungibleToken extends Context implements INEP141, INEP145, INEP148{
   }
         
   // To test
-  public ft_transfer_call(receiver_id: string, amount: u128, memo: string|null, msg: string):ContractPromise{  
+  public ft_transfer_call(receiver_id: AccountId, amount: u128, msg: string, memo: string|null):ContractPromise{  
     const sender_id = super._msgSender();
     // To define how to use memo inside _transfer
     this._transfer( sender_id, receiver_id, amount);
@@ -155,21 +146,18 @@ export class FungibleToken extends Context implements INEP141, INEP145, INEP148{
     return new ContractPromise();
   }
 
-
-
-
-  protected sendNear(recipient: string, amount: u128): void {
+  protected sendNear(recipient: AccountId, amount: u128): void {
     ContractPromiseBatch.create(recipient).transfer(amount);
   }
 
-  public storage_deposit(account_id: string = context.predecessor, registration_only: boolean = true): FungibleTokenStorageBalance {
-    /*  oneYocto(); */
-    const storange_bound = this.storage_balance_bounds();
-    const min_bound = u128.from(storange_bound);
+  public storage_deposit(account_id: AccountId = context.predecessor, registration_only: boolean = true): FungibleTokenStorageBalance {
+    oneYocto();
+    const storange_bound:FungibleTokenStorageBalanceBounds = this.storage_balance_bounds();
+    const min_bound:u128 = storange_bound.min;
 
-    assert(context.attachedDeposit >= min_bound, "Deposit too low to pay registration fee");
+    assert(u128.from(context.attachedDeposit) >= min_bound, "Deposit too low to pay registration fee");
 
-    const balance = this.storage_balance_of(account_id);
+    const balance:FungibleTokenStorageBalance = this.storage_balance_of(account_id);
     if (u128.from(balance.total) > u128.Zero) {
       logging.log("The account is already registered, refunding the deposit");
       this.sendNear(context.predecessor, context.attachedDeposit);
@@ -194,7 +182,7 @@ export class FungibleToken extends Context implements INEP141, INEP145, INEP148{
   }
 
   public storage_unregister(force: boolean = false): boolean {
-    /* oneYocto(); */
+    oneYocto();
     if (force) {
       this._balances.delete(context.predecessor);
       this._storageRegistry.delete(context.predecessor);
@@ -205,15 +193,10 @@ export class FungibleToken extends Context implements INEP141, INEP145, INEP148{
   }
 
   public storage_balance_bounds(): FungibleTokenStorageBalanceBounds {
-    const storage_cost = this.get_account_storage_cost();
-    return new FungibleTokenStorageBalanceBounds(storage_cost, storage_cost);
+    return this.storageBalanceBounds;
   }
 
   public storage_balance_of(account_id: string): FungibleTokenStorageBalance {
-    return this._storageRegistry.get(account_id, new FungibleTokenStorageBalance(u128.Zero, this.get_account_storage_cost()))!;
-  }
-
-  public get_account_storage_cost(): u128 {
-    return storage.getSome<u128>("account_storage_usage");
+    return this._storageRegistry.get(account_id, new FungibleTokenStorageBalance(u128.Zero, u128.from(context.storageUsage)))!;
   }
 }

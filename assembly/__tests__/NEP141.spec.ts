@@ -1,5 +1,6 @@
 import { u128 , VMContext } from "near-sdk-as";
 import { FungibleTokenMock } from "../contracts/token/mocks/FungibleTokenMock";
+import { FungibleToken } from "../contracts/token/FungibleToken/preset/FungibleToken";
 import { FungibleTokenMetadata } from "../contracts/token/FungibleToken/utils";
 
 let token: FungibleTokenMock;
@@ -191,22 +192,28 @@ class NEP141Test{
       describe('when the sender transfers all balance', ()=> {
         beforeEach(() => {
           VMContext.setSigner_account_id(initialHolder);
-          token = new FungibleTokenMock(name, symbol, 10,initialHolder, initialSupply);
+          VMContext.setAccount_balance(u128.fromString("1000000"));
         });
         it('transfers the requested amount', ()=>{
-          token.ft_transfer(recipient, initialSupply, null);
-          expect(token.ft_balance_of(initialHolder)).toBe(u128.Zero);
-          expect(token.ft_balance_of(recipient)).toBe(initialSupply);
+          const FT:FungibleToken= new FungibleToken(name, symbol, decimals, "", "", "");
+          FT.ft_mint(initialHolder, initialSupply);
+
+          VMContext.setAttached_deposit(u128.One);
+          FT.ft_transfer(recipient, initialSupply, null);
+          expect(FT.ft_balance_of(initialHolder)).toBe(u128.Zero);
+          expect(FT.ft_balance_of(recipient)).toBe(initialSupply);
         });
       });
 
       describe('when the sender transfers zero tokens', function () {
         beforeEach(() => {
           VMContext.setSigner_account_id(initialHolder);
-          token = new FungibleTokenMock(name, symbol, decimals,initialHolder, initialSupply);
+          VMContext.setAccount_balance(u128.fromString("1000000"));
+          token = new FungibleTokenMock(name, symbol, decimals, initialHolder, initialSupply);
         });
         it('transfers the requested amount', ()=> {
-          token.ft_transfer(recipient, u128.Zero, "");
+          VMContext.setAttached_deposit(u128.One);
+          token.ft_transfer(recipient, u128.Zero, null);
           expect(token.ft_balance_of(initialHolder)).toBe(initialSupply);
           expect(token.ft_balance_of(recipient)).toBe(u128.Zero);
         });
@@ -215,6 +222,7 @@ class NEP141Test{
       describe('when the recipient is the zero address', ()=> {
         beforeEach(() => {
           VMContext.setSigner_account_id(initialHolder);
+          VMContext.setAccount_balance(u128.fromString("1000000"));
           token = new FungibleTokenMock(name, symbol, 10,initialHolder, initialSupply);
         });
         throws('throws', () =>{

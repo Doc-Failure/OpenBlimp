@@ -1,21 +1,13 @@
 import { FungibleTokenMetadata } from "./utils";
-/* import { MintableFT } from "./preset/MintableFT"; */
 import { FungibleToken } from "./preset/FungibleToken";
-import { storage, u128, context } from "near-sdk-as";
+import { storage, u128 } from "near-sdk-as";
 import {FungibleTokenStorageBalanceBounds, FungibleTokenStorageBalance} from "./utils";
 
-// initialAccount:AccountId ,initialSupply: u128
-
-// init
+// TODO - insert some init check
 export function ft_initialize_impl(name: string, symbol: string, decimals: u8, icon:string, reference:string, reference_hash:string): void {
   const FT:FungibleToken= new FungibleToken(name, symbol, decimals, icon, reference, reference_hash);
   storage.set("FT", FT);
-
-  const initial_storage_usage:u128 =  u128.from(context.storageUsage);
-  // context.storageUsage - initial_storage_usage
-  storage.set("account_storage_usage", u128.Zero);
 }
-
 
 export function ft_mint_impl(account: string, amount: u128):void{
   const FT:FungibleToken=storage.getSome<FungibleToken>("FT");
@@ -44,7 +36,7 @@ export function ft_transfer_call_impl(receiver_id: string, amount: u128, msg: st
 
 export function ft_on_transfer_impl(sender_id: string, amount: string, msg: string): string {
   /* return ft_on_transfer_impl(sender_id, amount, msg); */
-  return "ok";
+  return "OK";
 }
 
 export function ft_resolve_transfer_impl(sender_id: string, receiver_id: string, amount: string): string {
@@ -80,7 +72,6 @@ export function storage_withdraw_impl(amount: string|null): FungibleTokenStorage
   const res:FungibleTokenStorageBalance=FT.storage_withdraw(amount);
   storage.set("FT", FT);
   return res;
-
 }
 
 export function storage_unregister_impl(force: boolean): boolean{
