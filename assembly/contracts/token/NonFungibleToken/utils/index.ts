@@ -1,3 +1,8 @@
+export type Token = {
+  token_id: string,
+  owner_id: string,
+}
+
 @nearBindgen
 export class ContractMetadata{
   spec: string; // required, essentially a version like "nft-1.0.0"
