@@ -67,7 +67,7 @@ export function storage_deposit_impl( account_id: string, registration_only: boo
   return res;
 }
 
-export function storage_withdraw_impl(amount: string|null): FungibleTokenStorageBalance{
+export function storage_withdraw_impl(amount: u128|null): FungibleTokenStorageBalance{
   const FT:FungibleToken=storage.getSome<FungibleToken>("FT");
   const res:FungibleTokenStorageBalance=FT.storage_withdraw(amount);
   storage.set("FT", FT);
