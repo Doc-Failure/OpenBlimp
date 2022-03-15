@@ -2,7 +2,8 @@ import { ContractPromise, ContractPromiseBatch, PersistentMap, u128, context, lo
 import { AccountId, Balance } from "../../../utils/utils";
 import { Context } from "../../../utils/Context";
 import { INEP141, INEP145, INEP148 } from "../Interfaces";
-import { FungibleTokenMetadata, XCC_GAS, XCC_RESOLVE_GAS, FungibleTokenStorageBalance, FungibleTokenStorageBalanceBounds, FTT_CALL, FTT_CALLBACK } from "../utils";
+import { FungibleTokenMetadata, FungibleTokenStorageBalance, FungibleTokenStorageBalanceBounds, FTT_CALL, FTT_CALLBACK } from "../utils";
+import { XCC_GAS, XCC_RESOLVE_GAS} from "../../../utils/utils";
 
 @nearBindgen
 export class FungibleToken extends Context implements INEP141, INEP145, INEP148{

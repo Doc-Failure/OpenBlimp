@@ -47,7 +47,3 @@ export class FtMetadata{
 }
 
 export type FungibleTokenMetadata = FtMetadata;
-
-
-export const XCC_GAS: u64 = 35_000_000_000_000;
-export const XCC_RESOLVE_GAS: u64 = 10_000_000_000_000;
