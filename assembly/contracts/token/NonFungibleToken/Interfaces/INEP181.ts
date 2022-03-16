@@ -7,5 +7,4 @@ export interface INEP181{
     nft_tokens( from_index: string|null, limit: number|null ): Token[];
     nft_supply_for_owner( account_id: string ): string;
     nft_tokens_for_owner( account_id: string, from_index: string|null, limit: number|null, ): Token[];
-    
 }
