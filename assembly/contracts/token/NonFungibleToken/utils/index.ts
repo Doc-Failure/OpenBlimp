@@ -30,5 +30,5 @@ export class TokenMetadata{
   reference_hash: string|null; // Base64-encoded sha256 hash of JSON from reference field. Required if `reference` is included.
 }
 
-export type NFTokenMetadata = TokenMetadata;
-export type NFTContractMetadata = ContractMetadata;
+export type NonFungibleTokenMetadata = TokenMetadata;
+export type NonFungibleTokenContractMetadata = ContractMetadata;

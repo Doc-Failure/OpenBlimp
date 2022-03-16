@@ -1,5 +1,5 @@
-import { NFTokenMetadata, Token } from "../utils";
-import { ContractPromise, u128 } from "near-sdk-as";
+import { Token } from "../utils";
+import { ContractPromise } from "near-sdk-as";
 
 export interface INEP171{
     nft_transfer( receiver_id: string, token_id: string,  approval_id: number|null, memo: string|null ):void;

@@ -1,5 +1,5 @@
-import { NFTokenMetadata } from "../utils";
+import { NonFungibleTokenContractMetadata } from "../utils";
 
 export interface INEP177{
-    ft_metadata(): NFTokenMetadata;
+    nft_metadata(): NonFungibleTokenContractMetadata;
 }
