@@ -61,7 +61,7 @@ export class NonFungibleTokenContract extends Context implements INEP177{
 
 
   // ATM we always consider registration_only to be true
-/*   public storage_deposit(account_id: AccountId = context.predecessor, registration_only: boolean = true): FungibleTokenStorageBalance {
+  /*   public storage_deposit(account_id: AccountId = context.predecessor, registration_only: boolean = true): FungibleTokenStorageBalance {
     const storange_bound:FungibleTokenStorageBalanceBounds = this.storage_balance_bounds();
     const min_bound:u128 = storange_bound.min;
 
