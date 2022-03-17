@@ -1,4 +1,4 @@
-import { Token } from "../utils";
+import { Token } from "../preset/NonFungibleTokenContract";
 import { ContractPromise, u128 } from "near-sdk-as";
 
 export interface INEP181{
