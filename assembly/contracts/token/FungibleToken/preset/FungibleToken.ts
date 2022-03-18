@@ -24,7 +24,7 @@ export class FungibleToken extends Context implements INEP141, INEP145, INEP148{
     this.storageBalanceBounds= new FungibleTokenStorageBalanceBounds(account_storage_usage, account_storage_usage);
   }
 
-  // copied as is from rust library, didn't understant how it works
+  // copied as is from rust library
   private _measure_account_storage_usage(): u128 {
     const initial_storage_usage:u64 = context.storageUsage;
     this._balances.set("a".repeat(64), u128.Max);

@@ -1,18 +1,20 @@
-import { NFTContractMetadata } from "./utils";
 import { NonFungibleTokenContract } from "./preset/NonFungibleTokenContract";
-import { storage, u128 } from "near-sdk-as";
+import { storage } from "near-sdk-as";
+
+import { AccountId, TokenId } from "../../utils/utils";
+import { NFTContractMetadata, NFTMetadata } from "./utils";
 
 // TODO - insert some init check
-export function ft_initialize_impl(name: string, symbol: string, icon: string|null, base_uri: string|null, reference: string|null, reference_hash: string|null): void {
+export function nft_initialize_impl(name: string, symbol: string, icon: string="", base_uri: string="", reference: string="", reference_hash: string=""): void {
   const NFT:NonFungibleTokenContract= new NonFungibleTokenContract(name, symbol, icon, base_uri, reference, reference_hash);
   storage.set("FT", NFT);
 }
-/* 
-export function ft_mint_impl(account: string, amount: u128):void{
-  const FT:FungibleToken=storage.getSome<FungibleToken>("FT");
-  FT.ft_mint(account,amount);
+
+export function nft_mint_impl( token_id: TokenId, metadata: NFTMetadata, receiver_id: AccountId):void{
+  const FT:NonFungibleTokenContract=storage.getSome<NonFungibleTokenContract>("FT");
+  FT.nft_mint( token_id, metadata, receiver_id);
   storage.set("FT", FT);
-} */
+}
 /* 
 export function ft_burn_impl(account: string, amount: u128):void{
   const FT:FungibleToken=storage.getSome<FungibleToken>("FT");
