@@ -1,15 +1,14 @@
-import { AccountId } from "../../../utils/utils";
+import { AccountId, TokenId,  } from "../../../utils/utils";
 
 @nearBindgen
 export class Token{
-  /*  token_id: TokenId; */
+  token_id: TokenId;
   owner_id: AccountId;
-  /*  metadata: NonFungibleTokenMetadata; */
-  constructor(owner_id:AccountId){
-    /*  token_id: TokenId ,, metadata:NonFungibleTokenMetadata */
-  /*   this.token_id=token_id; */
+  metadata: NFTMetadata;
+  constructor(token_id:TokenId, owner_id:AccountId, metadata:NFTMetadata){
+    this.token_id=token_id;
     this.owner_id=owner_id;
-    /*  this.metadata=metadata; */
+    this.metadata=metadata;
   } 
 }
 

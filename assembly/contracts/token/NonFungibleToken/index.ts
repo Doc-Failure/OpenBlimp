@@ -7,13 +7,13 @@ import { NFTContractMetadata, NFTMetadata } from "./utils";
 // TODO - insert some init check
 export function nft_initialize_impl(name: string, symbol: string, icon: string="", base_uri: string="", reference: string="", reference_hash: string=""): void {
   const NFT:NonFungibleTokenContract= new NonFungibleTokenContract(name, symbol, icon, base_uri, reference, reference_hash);
-  storage.set("FT", NFT);
+  storage.set("NFT", NFT);
 }
 
 export function nft_mint_impl( token_id: TokenId, metadata: NFTMetadata, receiver_id: AccountId):void{
-  const FT:NonFungibleTokenContract=storage.getSome<NonFungibleTokenContract>("FT");
-  FT.nft_mint( token_id, metadata, receiver_id);
-  storage.set("FT", FT);
+  const NFT:NonFungibleTokenContract=storage.getSome<NonFungibleTokenContract>("FT");
+  NFT.nft_mint( token_id, metadata, receiver_id);
+  storage.set("NFT", NFT);
 }
 /* 
 export function ft_burn_impl(account: string, amount: u128):void{
@@ -55,7 +55,7 @@ export function ft_balance_of_impl(account_id: string): u128 {
 
 // METADATA NEP-148
 export function nft_metadata_impl(): NFTContractMetadata {
-  const NFT:NonFungibleTokenContract=storage.getSome<NonFungibleTokenContract>("FT");
+  const NFT:NonFungibleTokenContract=storage.getSome<NonFungibleTokenContract>("NFT");
   return NFT.nft_metadata();
 }
 /* 

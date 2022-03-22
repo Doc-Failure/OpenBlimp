@@ -12,21 +12,17 @@ export class NonFungibleTokenContract extends Context implements INEP177{
   public metadata: NFTContractMetadata;
 
   // keeps track of all the token IDs for a given account
-  public tokens_per_owner: PersistentMap<AccountId, PersistentSet<TokenId>>;
+  public tokens_per_owner: PersistentMap<AccountId, PersistentSet<Token>>;
 
   // keeps track of the token struct for a given token ID
-  public tokens_by_id: PersistentMap<TokenId, Token>;
-
-  // keeps track of the token metadata for a given token ID
-  public token_metadata_by_id: PersistentUnorderedMap<TokenId, NFTMetadata>;
+  public tokens_by_id: PersistentUnorderedMap<TokenId, Token>;
 
   /*  private metadata: NonFungibleTokenContractMetadata; */
 
   constructor(name: string, symbol: string, icon: string="", base_uri: string="", reference: string="", reference_hash: string=""){
     super();
-    this.tokens_per_owner=new PersistentMap<AccountId, PersistentSet<TokenId>>('o');
-    this.tokens_by_id=new PersistentMap<TokenId, Token>('i');
-    this.token_metadata_by_id=new  PersistentUnorderedMap<TokenId, NFTMetadata>('m');
+    this.tokens_per_owner=new PersistentMap<AccountId, PersistentSet<Token>>('o');
+    this.tokens_by_id=new PersistentUnorderedMap<TokenId, Token>('i');
     this.owner_id=super._msgSender();
     this.metadata=new NFTContractMetadata("nft-1.0.0", name, symbol, icon, base_uri, reference, reference_hash);
   }
@@ -37,20 +33,19 @@ export class NonFungibleTokenContract extends Context implements INEP177{
 
   public nft_mint( token_id: TokenId, metadata: NFTMetadata, receiver_id: AccountId): void{
     const initial_storage_usage:u128 = u128.from(context.storageUsage);
-    const token = new Token(receiver_id);
+    const token = new Token(token_id, receiver_id, metadata);
     assert(!this.tokens_by_id.contains(token_id), "Token already exists" );
     this.tokens_by_id.set(token_id, token);
-    this.token_metadata_by_id.set(token_id, metadata);
-    this._addTokenToOwner(receiver_id, token_id);
+    this._addTokenToOwner(receiver_id, token);
     const required_storage:u128 = u128.sub( u128.from(context.storageUsage), initial_storage_usage);
     this.refund_deposit(required_storage);
     return;
   }
 
-  private _addTokenToOwner(receiver_id: AccountId, token_id:TokenId):void{
-    const tokenByOwner:PersistentSet<TokenId>|null=this.tokens_per_owner.get(receiver_id);
-    let newTokenByOwner:PersistentSet<TokenId>=tokenByOwner?tokenByOwner:new PersistentSet<TokenId>('tbo'+receiver_id);
-    newTokenByOwner.add(token_id);
+  private _addTokenToOwner(receiver_id: AccountId, token:Token):void{
+    const tokenByOwner:PersistentSet<Token>|null=this.tokens_per_owner.get(receiver_id);
+    let newTokenByOwner:PersistentSet<Token>=tokenByOwner?tokenByOwner:new PersistentSet<Token>('tbo'+receiver_id);
+    newTokenByOwner.add(token);
     this.tokens_per_owner.set(receiver_id, newTokenByOwner);
   }
 
@@ -84,26 +79,19 @@ export class NonFungibleTokenContract extends Context implements INEP177{
 
 
   // Query for all the tokens for an owner
-  public nft_tokens_for_owner( account_id: AccountId, from_index: u128|null=u128.Zero, limit: u128|null=u128.Max ): Array<string>{
+  public nft_tokens_for_owner( account_id: AccountId, from_index: u128|null=u128.Zero, limit: u128|null=new u128(50) ): PersistentSet<Token>{
     // get the set of tokens for the passed in owner
-    let tokens_for_owner_set = this.tokens_per_owner.get(account_id);
+    let tokens_for_owner_set: PersistentSet<Token>|null = this.tokens_per_owner.get(account_id);
     // if there is some set of tokens, we'll set the tokens variable equal to that set
-    let tokens = tokens_for_owner_set?tokens_for_owner_set:[];
-    // console.log(tokens.toString());
-    // JsonToken
-    // iterate through the keys vector
-    /*  tokens.iter()
-          //skip to the index we specified in the start variable
-          .skip(start as usize) 
-          //take the first "limit" elements in the vector. If we didn't specify a limit, use 50
-          .take(limit.unwrap_or(50) as usize) 
-          //we'll map the token IDs which are strings into Json Tokens
-          .map(|token_id| self.nft_token(token_id.clone()).unwrap())
-          //since we turned the keys into an iterator, we need to turn it back into a vector to return
-          .collect() */
-    return new Array();
+    let tokens: PersistentSet<Token> = tokens_for_owner_set?tokens_for_owner_set:PersistentSet.prototype;
+    // qui manca il limite da....a....
+    return tokens;
   }
 
+
+  protected nft_total_supply(): u128 {
+    return u128.from(this.tokens_by_id.length);
+  }
   // ATM we always consider registration_only to be true
   /*   public storage_deposit(account_id: AccountId = context.predecessor, registration_only: boolean = true): FungibleTokenStorageBalance {
     const storange_bound:FungibleTokenStorageBalanceBounds = this.storage_balance_bounds();
