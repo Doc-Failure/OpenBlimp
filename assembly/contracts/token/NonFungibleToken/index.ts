@@ -1,8 +1,8 @@
 import { NonFungibleTokenContract } from "./preset/NonFungibleTokenContract";
-import { storage } from "near-sdk-as";
+import { PersistentSet, storage, u128 } from "near-sdk-as";
 
 import { AccountId, TokenId } from "../../utils/utils";
-import { NFTContractMetadata, NFTMetadata } from "./utils";
+import { NFTContractMetadata, NFTtokenMetadata } from "./utils";
 
 // TODO - insert some init check
 export function nft_initialize_impl(name: string, symbol: string, icon: string="", base_uri: string="", reference: string="", reference_hash: string=""): void {
@@ -10,10 +10,20 @@ export function nft_initialize_impl(name: string, symbol: string, icon: string="
   storage.set("NFT", NFT);
 }
 
-export function nft_mint_impl( token_id: TokenId, metadata: NFTMetadata, receiver_id: AccountId):void{
-  const NFT:NonFungibleTokenContract=storage.getSome<NonFungibleTokenContract>("FT");
-  NFT.nft_mint( token_id, metadata, receiver_id);
+export function nft_mint_impl( receiver_id: AccountId, token_id: TokenId, metadata: NFTtokenMetadata):void{
+  const NFT:NonFungibleTokenContract=storage.getSome<NonFungibleTokenContract>("NFT");
+  NFT.nft_mint( receiver_id, token_id, metadata);
   storage.set("NFT", NFT);
+}
+
+export function nft_tokens_for_owner_impl( account_id: AccountId, from_index: u128|null=u128.Zero, limit: u128|null=new u128(50) ): PersistentSet<TokenId>{
+  const NFT:NonFungibleTokenContract=storage.getSome<NonFungibleTokenContract>("NFT");
+  return NFT.nft_tokens_for_owner( account_id, from_index, limit);
+}
+
+export function nft_total_supply_impl(): u128 {
+  const NFT:NonFungibleTokenContract=storage.getSome<NonFungibleTokenContract>("NFT");
+  return NFT.nft_total_supply();
 }
 /* 
 export function ft_burn_impl(account: string, amount: u128):void{
@@ -43,10 +53,6 @@ export function ft_resolve_transfer_impl(sender_id: string, receiver_id: string,
   return "OK";
 }
 
-export function ft_total_supply_impl(): u128 {
-  const FT:FungibleToken=storage.getSome<FungibleToken>("FT");
-  return FT.ft_total_supply();
-}
 
 export function ft_balance_of_impl(account_id: string): u128 {
   const FT:FungibleToken=storage.getSome<FungibleToken>("FT");
