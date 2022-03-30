@@ -1,12 +1,12 @@
 import { ContractPromiseBatch, PersistentMap, u128, context, PersistentSet, PersistentUnorderedMap, PersistentVector} from "near-sdk-as";
 import { AccountId, TokenId } from "../../../utils/utils";
 import { Context } from "../../../utils/Context";
-import {  INEP177 } from "../Interfaces";
+import {  INEP171, INEP177, INEP181 } from "../Interfaces";
 import { NFTContractMetadata, NFTtokenMetadata, Token } from "../utils";
 
 
 @nearBindgen
-export class NonFungibleTokenContract extends Context implements INEP177{
+export class NonFungibleTokenContract extends Context implements INEP177, INEP181{
 
   private owner_id: string;
   private metadata: NFTContractMetadata;
@@ -21,6 +21,14 @@ export class NonFungibleTokenContract extends Context implements INEP177{
     super();
     this.owner_id=super._msgSender();
     this.metadata=new NFTContractMetadata("nft-1.0.0", name, symbol, icon, base_uri, reference, reference_hash);
+  }
+
+  nft_tokens(from_index: string | null, limit: number | null): Token[] {
+    throw new Error("Method not implemented.");
+  }
+  public nft_supply_for_owner(account_id: string): number {
+    let tokens_for_owner_set: PersistentVector<Token>|null = this.tokens_per_owner.get(account_id);
+    return tokens_for_owner_set?tokens_for_owner_set.length:0;
   }
 
   public nft_metadata(): NFTContractMetadata {
@@ -73,18 +81,25 @@ export class NonFungibleTokenContract extends Context implements INEP177{
 
 
   // Query for all the tokens for an owner
-  public nft_tokens_for_owner( account_id: AccountId, from_index: u128|null=u128.Zero, limit: u128|null=new u128(50) ): PersistentVector<Token>{
+  public nft_tokens_for_owner( account_id: AccountId, from_index: u128|null=u128.Zero, limit: u128|null=new u128(50) ): Array<Token>{
     // get the set of tokens for the passed in owner
     let tokens_for_owner_set: PersistentVector<Token>|null = this.tokens_per_owner.get(account_id);
     // if there is some set of tokens, we'll set the tokens variable equal to that set
     let tokens: PersistentVector<Token> = tokens_for_owner_set?tokens_for_owner_set:new PersistentVector<Token>('');
     // qui manca il limite da....a....
-    return tokens;
+    return this._deserialize_token_array(tokens);
   }
 
+  private _deserialize_token_array(res: PersistentVector<Token>): Array<Token>{
+    let result: Array<Token>=new Array<Token>();
+    for(let i = 0; i < res.length; i++) {
+      result[i] = res[i];
+    }
+    return result;
+  }
 
-  public nft_total_supply(): u128 {
-    return u128.from(this.tokens_by_id.length);
+  public nft_total_supply(): number {
+    return this.tokens_by_id.length;
   }
   // ATM we always consider registration_only to be true
   /*   public storage_deposit(account_id: AccountId = context.predecessor, registration_only: boolean = true): FungibleTokenStorageBalance {

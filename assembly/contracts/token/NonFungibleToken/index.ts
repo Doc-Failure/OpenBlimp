@@ -16,21 +16,23 @@ export function nft_mint_impl( receiver_id: AccountId, token_id: TokenId, metada
   storage.set("NFT", NFT);
 }
 
-export function nft_tokens_for_owner_impl( account_id: AccountId, from_index: u128|null=u128.Zero, limit: u128|null=new u128(50) ): PersistentVector<Token>{
+export function nft_tokens_for_owner_impl( account_id: AccountId, from_index: u128|null=u128.Zero, limit: u128|null=new u128(50) ): Array<Token>{
   const NFT:NonFungibleTokenContract=storage.getSome<NonFungibleTokenContract>("NFT");
   return NFT.nft_tokens_for_owner( account_id, from_index, limit);
 }
 
-export function nft_total_supply_impl(): u128 {
+export function nft_total_supply_impl(): number {
   const NFT:NonFungibleTokenContract=storage.getSome<NonFungibleTokenContract>("NFT");
   return NFT.nft_total_supply();
 }
-/* 
-export function ft_burn_impl(account: string, amount: u128):void{
-  const FT:FungibleToken=storage.getSome<FungibleToken>("FT");
-  FT.ft_burn(account,amount);
-  storage.set("FT", FT);
+
+
+
+export function nft_supply_for_owner_impl(account_id: AccountId):number{
+  const NFT:NonFungibleTokenContract=storage.getSome<NonFungibleTokenContract>("NFT");
+  return NFT.nft_supply_for_owner(account_id);
 }
+/* 
 
 // CORE NEP-141
 export function ft_transfer_impl(receiver_id: string, amount: u128, memo: string): void {
