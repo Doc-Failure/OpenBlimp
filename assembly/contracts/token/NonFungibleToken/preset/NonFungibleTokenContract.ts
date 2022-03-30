@@ -1,4 +1,4 @@
-import { ContractPromiseBatch, PersistentMap, u128, context, PersistentSet, PersistentUnorderedMap, PersistentVector} from "near-sdk-as";
+import { ContractPromiseBatch, PersistentMap, u128, context, PersistentSet, PersistentUnorderedMap, PersistentVector, ContractPromise, logging } from "near-sdk-as";
 import { AccountId, TokenId } from "../../../utils/utils";
 import { Context } from "../../../utils/Context";
 import {  INEP171, INEP177, INEP181 } from "../Interfaces";
@@ -6,7 +6,7 @@ import { NFTContractMetadata, NFTtokenMetadata, Token } from "../utils";
 
 
 @nearBindgen
-export class NonFungibleTokenContract extends Context implements INEP177, INEP181{
+export class NonFungibleTokenContract extends Context implements INEP171, INEP177, INEP181{
 
   private owner_id: string;
   private metadata: NFTContractMetadata;
@@ -22,8 +22,50 @@ export class NonFungibleTokenContract extends Context implements INEP177, INEP18
     this.owner_id=super._msgSender();
     this.metadata=new NFTContractMetadata("nft-1.0.0", name, symbol, icon, base_uri, reference, reference_hash);
   }
+  
+  public nft_transfer(receiver_id: string, token_id: string, approval_id: number | null, memo: string | null): void {
+    // this._transfer(receiver_id, token_id, approval_id, memo);
+  }
 
-  nft_tokens(from_index: u128=u128.Zero, pLimit: u128=u128.Zero): Array<Token> {
+  /* 
+// Internal functions extracted from "NEAR/core-contracts/nft-simple/src/internal.rs"
+export function internal_add_token_to_owner(account_id: AccountId, token_id: TokenId): void {
+  const token_set = TokensPerOwner.get(account_id, new Set<string>())!;
+  // logging.log("else TokensPerOwner.get(account_id)")
+  token_set.add(token_id);
+  TokensPerOwner.set(account_id, token_set);
+}
+
+public internal_remove_token_from_owner(account_id: AccountId, token_id: TokenId): void {
+  const token_set = TokensPerOwner.get(account_id);
+  if(!(token_set)) {
+    TokensPerOwner.delete(account_id);
+  } else {
+    TokensPerOwner.set(account_id, token_set);
+  }
+}
+ */
+  public nft_transfer_call(receiver_id: string, token_id: string, approval_id: number | null, memo: string | null, msg: string): ContractPromise{  
+    const sender_id = super._msgSender();
+    // To define how to use memo inside _transfer
+    /* this._transfer( sender_id, receiver_id, amount);
+    
+    ContractPromise
+      .create<NFTT_CALL>( receiver_id, "ft_on_transfer", { sender_id, amount, msg }, XCC_GAS )
+      .then<NFTT_CALLBACK>( context.contractName, "ft_resolve_transfer", { sender_id, receiver_id, amount }, XCC_RESOLVE_GAS )
+      .returnAsResult(); */
+    return new ContractPromise();
+  }
+
+  nft_token(token_id: string): Token | null {
+    throw new Error("Method not implemented.");
+  }
+
+  public nft_resolve_transfer(owner_id: string, receiver_id: string, token_id: string, approved_account_ids: Map<string, number> | null): boolean {
+    return false;
+  }
+
+  public nft_tokens(from_index: u128=u128.Zero, pLimit: u128=u128.Zero): Array<Token> {
     const limit:u128=pLimit==u128.Zero?new u128(50):pLimit;
     const res: Token[]=this.tokens_by_id.values(from_index.toI32(), limit.toI32());
     return res;
@@ -73,15 +115,9 @@ export class NonFungibleTokenContract extends Context implements INEP177, INEP18
     }
   }
 
-  public nft_resolve_transfer(owner_id: string, receiver_id: string, token_id: string, approved_account_ids: Map<string, number> | null): boolean {
-    return false;
-  }
-
-
   protected sendNear(recipient: AccountId, amount: u128): void {
     ContractPromiseBatch.create(recipient).transfer(amount);
   }
-
 
   // Query for all the tokens for an owner
   public nft_tokens_for_owner( account_id: AccountId, from_index: u128|null=u128.Zero, limit: u128|null=new u128(50) ): Array<Token>{
@@ -104,39 +140,4 @@ export class NonFungibleTokenContract extends Context implements INEP177, INEP18
   public nft_total_supply(): number {
     return this.tokens_by_id.length;
   }
-  // ATM we always consider registration_only to be true
-  /*   public storage_deposit(account_id: AccountId = context.predecessor, registration_only: boolean = true): FungibleTokenStorageBalance {
-    const storange_bound:FungibleTokenStorageBalanceBounds = this.storage_balance_bounds();
-    const min_bound:u128 = storange_bound.min;
-
-    assert(u128.from(context.attachedDeposit) >= min_bound, "Deposit too low to pay registration fee");
-
-    const balance:FungibleTokenStorageBalance = this.storage_balance_of(account_id);
-    if (balance.total > u128.Zero) {
-      logging.log("The account is already registered, refunding the deposit");
-      this.sendNear(context.predecessor, context.attachedDeposit);
-      return balance;
-    } */
-
-  /*  public nft_token(token_id: string): NonFungibleToken | null {
-    return this;
-  } */
-  /* 
-  public nft_transfer_call(receiver_id: string, token_id: string, approval_id: number | null, memo: string | null, msg: string): ContractPromise { */
-  /* 
-    const sender_id = super._msgSender();
-    // To define how to use memo inside _transfer
-    this._transfer( sender_id, receiver_id, amount);
-    
-    ContractPromise
-      .create<FTT_CALL>( receiver_id, "ft_on_transfer", { sender_id, amount, msg }, XCC_GAS )
-      .then<FTT_CALLBACK>( context.contractName, "ft_resolve_transfer", { sender_id, receiver_id, amount }, XCC_RESOLVE_GAS )
-      .returnAsResult(); */
-  /*    return new ContractPromise();
-  } */
-
-  /*   public nft_transfer(receiver_id: string, token_id: string, approval_id: number | null, memo: string | null): void {
-    return;
-  } */
-
 }
