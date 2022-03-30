@@ -1,4 +1,4 @@
-import { ContractPromiseBatch, PersistentMap, u128, context, PersistentSet, PersistentUnorderedMap} from "near-sdk-as";
+import { ContractPromiseBatch, PersistentMap, u128, context, PersistentSet, PersistentUnorderedMap, PersistentVector} from "near-sdk-as";
 import { AccountId, TokenId } from "../../../utils/utils";
 import { Context } from "../../../utils/Context";
 import {  INEP177 } from "../Interfaces";
@@ -12,15 +12,13 @@ export class NonFungibleTokenContract extends Context implements INEP177{
   private metadata: NFTContractMetadata;
 
   // keeps track of all the token IDs for a given account
-  private tokens_per_owner: PersistentUnorderedMap<AccountId, PersistentSet<TokenId>>;
+  private tokens_per_owner: PersistentUnorderedMap<AccountId, PersistentVector<Token>>=new PersistentUnorderedMap<AccountId, PersistentVector<Token>>('o');
 
   // keeps track of the token struct for a given token ID
-  private tokens_by_id: PersistentUnorderedMap<TokenId, Token>;
+  private tokens_by_id: PersistentUnorderedMap<TokenId, Token>=new PersistentUnorderedMap<TokenId, Token>('i');
 
   constructor(name: string, symbol: string, icon: string="", base_uri: string="", reference: string="", reference_hash: string=""){
     super();
-    this.tokens_per_owner=new PersistentUnorderedMap<AccountId, PersistentSet<TokenId>>('o');
-    this.tokens_by_id=new PersistentUnorderedMap<TokenId, Token>('i');
     this.owner_id=super._msgSender();
     this.metadata=new NFTContractMetadata("nft-1.0.0", name, symbol, icon, base_uri, reference, reference_hash);
   }
@@ -31,21 +29,20 @@ export class NonFungibleTokenContract extends Context implements INEP177{
   
   public nft_mint( receiver_id: AccountId, token_id: TokenId, metadata: NFTtokenMetadata ): void{
     // const initial_storage_usage:u128 = u128.from(context.storageUsage);
-    let token = new Token(token_id, receiver_id, metadata);
+    const token = new Token(token_id, receiver_id, metadata);
     // assert(!this.tokens_by_id.contains(token_id), "Token already exists" );
     this.tokens_by_id.set(token_id, token);
-    // this._addTokenToOwner(receiver_id, token_id);
+    this._addTokenToOwner(receiver_id, token);
     // const required_storage:u128 = u128.sub( u128.from(context.storageUsage), initial_storage_usage);
     // this.refund_deposit(required_storage);
   }
 
-  private _addTokenToOwner(receiver_id: AccountId, tokenId:TokenId):void{
-    const tokenByOwner:PersistentSet<TokenId>|null=this.tokens_per_owner.get(receiver_id);
-    let newTokenByOwner:PersistentSet<TokenId>=tokenByOwner?tokenByOwner:new PersistentSet<TokenId>('tbo'+receiver_id);
-    newTokenByOwner.add(tokenId);
+  private _addTokenToOwner(receiver_id: AccountId, token:Token):void{
+    const tokenByOwner:PersistentVector<Token>|null=this.tokens_per_owner.get(receiver_id);
+    let newTokenByOwner:PersistentVector<Token>=tokenByOwner?tokenByOwner:new PersistentVector<Token>('tbo'+receiver_id);
+    newTokenByOwner.push(token);
     this.tokens_per_owner.set(receiver_id, newTokenByOwner);
   }
-
 
   public refund_deposit(required_storage: u128):void{
     // get how much it would cost to store the information
@@ -76,11 +73,11 @@ export class NonFungibleTokenContract extends Context implements INEP177{
 
 
   // Query for all the tokens for an owner
-  public nft_tokens_for_owner( account_id: AccountId, from_index: u128|null=u128.Zero, limit: u128|null=new u128(50) ): PersistentSet<TokenId>{
+  public nft_tokens_for_owner( account_id: AccountId, from_index: u128|null=u128.Zero, limit: u128|null=new u128(50) ): PersistentVector<Token>{
     // get the set of tokens for the passed in owner
-    let tokens_for_owner_set: PersistentSet<TokenId>|null = this.tokens_per_owner.get(account_id);
+    let tokens_for_owner_set: PersistentVector<Token>|null = this.tokens_per_owner.get(account_id);
     // if there is some set of tokens, we'll set the tokens variable equal to that set
-    let tokens: PersistentSet<TokenId> = tokens_for_owner_set?tokens_for_owner_set:new PersistentSet<TokenId>('');
+    let tokens: PersistentVector<Token> = tokens_for_owner_set?tokens_for_owner_set:new PersistentVector<Token>('');
     // qui manca il limite da....a....
     return tokens;
   }

@@ -40,7 +40,7 @@ export class NFTtokenMetadata{
   description: string; // free-form description
   media: string; // URL to associated media, preferably to decentralized, content-addressed storage
   media_hash: string; // Base64-encoded sha256 hash of content referenced by the `media` field. Required if `media` is included.
-  copies: string; // number of copies of this set of metadata in existence when token was minted.
+  copies: u128; // number of copies of this set of metadata in existence when token was minted.
   issued_at: string; // When token was issued or minted, Unix epoch in milliseconds
   expires_at: string; // When token expires, Unix epoch in milliseconds
   starts_at: string; // When token starts being valid, Unix epoch in milliseconds
@@ -49,7 +49,7 @@ export class NFTtokenMetadata{
   reference: string; // URL to an off-chain JSON file with more info.
   reference_hash: string; // Base64-encoded sha256 hash of JSON from reference field. Required if `reference` is included.
   
-  constructor( title: string, description: string, media: string, media_hash: string, copies: string, issued_at: string, expires_at: string, starts_at: string, updated_at: string, extra: string, reference: string, reference_hash: string){
+  constructor( title: string, description: string, media: string, media_hash: string, copies: u128, issued_at: string, expires_at: string, starts_at: string, updated_at: string, extra: string, reference: string, reference_hash: string){
     this.title=title;
     this.description=description;
     this.media=media;

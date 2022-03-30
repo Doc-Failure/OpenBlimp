@@ -1,8 +1,8 @@
 import { NonFungibleTokenContract } from "./preset/NonFungibleTokenContract";
-import { PersistentSet, storage, u128 } from "near-sdk-as";
+import { PersistentVector, storage, u128 } from "near-sdk-as";
 
 import { AccountId, TokenId } from "../../utils/utils";
-import { NFTContractMetadata, NFTtokenMetadata } from "./utils";
+import { NFTContractMetadata, NFTtokenMetadata, Token } from "./utils";
 
 // TODO - insert some init check
 export function nft_initialize_impl(name: string, symbol: string, icon: string="", base_uri: string="", reference: string="", reference_hash: string=""): void {
@@ -16,7 +16,7 @@ export function nft_mint_impl( receiver_id: AccountId, token_id: TokenId, metada
   storage.set("NFT", NFT);
 }
 
-export function nft_tokens_for_owner_impl( account_id: AccountId, from_index: u128|null=u128.Zero, limit: u128|null=new u128(50) ): PersistentSet<TokenId>{
+export function nft_tokens_for_owner_impl( account_id: AccountId, from_index: u128|null=u128.Zero, limit: u128|null=new u128(50) ): PersistentVector<Token>{
   const NFT:NonFungibleTokenContract=storage.getSome<NonFungibleTokenContract>("NFT");
   return NFT.nft_tokens_for_owner( account_id, from_index, limit);
 }
