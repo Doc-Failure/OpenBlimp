@@ -26,21 +26,17 @@ export function nft_total_supply_impl(): number {
   return NFT.nft_total_supply();
 }
 
-
-
 export function nft_supply_for_owner_impl(account_id: AccountId):number{
   const NFT:NonFungibleTokenContract=storage.getSome<NonFungibleTokenContract>("NFT");
   return NFT.nft_supply_for_owner(account_id);
 }
-/* 
 
-// CORE NEP-141
-export function ft_transfer_impl(receiver_id: string, amount: u128, memo: string): void {
-  const FT:FungibleToken=storage.getSome<FungibleToken>("FT");
-  FT.ft_transfer(receiver_id, amount, memo);
-  storage.set("FT", FT);
+export function nft_tokens_impl(from_index: u128=u128.Zero, pLimit: u128=u128.Zero): Token[] {
+  const NFT:NonFungibleTokenContract=storage.getSome<NonFungibleTokenContract>("NFT");
+  return NFT.nft_tokens(from_index?from_index:u128.Zero, pLimit?pLimit:u128.Max);
 }
 
+/*
 export function ft_transfer_call_impl(receiver_id: string, amount: u128, msg: string, memo: string): void {
   const FT:FungibleToken=storage.getSome<FungibleToken>("FT");
   FT.ft_transfer_call(receiver_id, amount, memo, msg);

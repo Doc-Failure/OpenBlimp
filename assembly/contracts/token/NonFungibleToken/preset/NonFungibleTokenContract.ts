@@ -23,9 +23,12 @@ export class NonFungibleTokenContract extends Context implements INEP177, INEP18
     this.metadata=new NFTContractMetadata("nft-1.0.0", name, symbol, icon, base_uri, reference, reference_hash);
   }
 
-  nft_tokens(from_index: string | null, limit: number | null): Token[] {
-    throw new Error("Method not implemented.");
+  nft_tokens(from_index: u128=u128.Zero, pLimit: u128=u128.Zero): Array<Token> {
+    const limit:u128=pLimit==u128.Zero?new u128(50):pLimit;
+    const res: Token[]=this.tokens_by_id.values(from_index.toI32(), limit.toI32());
+    return res;
   }
+
   public nft_supply_for_owner(account_id: string): number {
     let tokens_for_owner_set: PersistentVector<Token>|null = this.tokens_per_owner.get(account_id);
     return tokens_for_owner_set?tokens_for_owner_set.length:0;
